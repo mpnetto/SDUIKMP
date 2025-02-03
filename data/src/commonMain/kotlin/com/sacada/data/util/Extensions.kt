@@ -17,14 +17,14 @@ import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonPrimitive
 
 fun ViewComponent.getPadding(): PaddingValues {
-    val padding = this.getStringAttribute("padding").toIntOrNull()?.dp
+    val padding = this.getStringAttribute("padding").toDoubleOrNull()?.dp
     if (padding != null) {
         return PaddingValues(all = padding)
     }
-    val paddingLeft = this.getStringAttribute("paddingLeft").toIntOrNull()?.dp ?: 0.dp
-    val paddingRight = this.getStringAttribute("paddingRight").toIntOrNull()?.dp ?: 0.dp
-    val paddingTop = this.getStringAttribute("paddingTop").toIntOrNull()?.dp ?: 0.dp
-    val paddingBottom = this.getStringAttribute("paddingBottom").toIntOrNull()?.dp ?: 0.dp
+    val paddingLeft = this.getStringAttribute("paddingLeft").toDoubleOrNull()?.dp ?: 0.dp
+    val paddingRight = this.getStringAttribute("paddingRight").toDoubleOrNull()?.dp ?: 0.dp
+    val paddingTop = this.getStringAttribute("paddingTop").toDoubleOrNull()?.dp ?: 0.dp
+    val paddingBottom = this.getStringAttribute("paddingBottom").toDoubleOrNull()?.dp ?: 0.dp
     return PaddingValues(
         start = paddingLeft,
         end = paddingRight,

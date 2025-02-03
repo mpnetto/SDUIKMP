@@ -50,7 +50,7 @@ object TopBarGenerator : Component.Generator {
                 put("paddingTop", JsonPrimitive(instance.paddingTop))
                 put("paddingBottom", JsonPrimitive(instance.paddingBottom))
                 put("scrollBehavior", JsonPrimitive("pinned"))
-                put("topBarType", JsonPrimitive(instance.componentProperties["Configuration"]?.value ?: "default"))
+                put("topBarType", instance.componentProperties["Configuration"]?.value ?: JsonPrimitive("default"))
                 (instance.components.find { it is Text } as? Text)?.let {
                     put("title", JsonPrimitive(it.characters))
                 }

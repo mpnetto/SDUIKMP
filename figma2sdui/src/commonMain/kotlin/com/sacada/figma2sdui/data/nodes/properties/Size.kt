@@ -3,6 +3,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Size(
-    val width: Int,
-    val height: Int
+    val width: Double,
+    val height: Double
 )

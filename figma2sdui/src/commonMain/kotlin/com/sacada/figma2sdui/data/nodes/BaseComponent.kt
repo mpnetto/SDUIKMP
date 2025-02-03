@@ -3,9 +3,12 @@ package com.sacada.figma2sdui.data.nodes
 import kotlinx.serialization.Serializable
 
 @Serializable
-abstract class BaseComponent(
+sealed class BaseComponent(
     val id: String = "",
     var name: String = "",
     val type: NodeType = NodeType.UNKNOWN
 
-) : TreeNode()
+) : TreeNode() {
+    open fun resolveComponentId(): String? = null
+    open fun resolveComponents(): Array<BaseComponent>? = null
+}

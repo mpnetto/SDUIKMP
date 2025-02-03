@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Overrides(
     val id: String,
-    val overridenFields: Array<String>
+    val overridenFields: Array<String> = emptyArray()
 )

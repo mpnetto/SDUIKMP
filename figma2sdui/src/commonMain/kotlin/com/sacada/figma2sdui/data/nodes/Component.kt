@@ -24,18 +24,18 @@ data class Component(
     val clipsContent: Boolean,
     val fills: Array<Paint>,
     val strokes: Array<Paint>,
-    val cornerRadius: Int,
-    val strokeWeight: Int,
+    val cornerRadius: Double,
+    val strokeWeight: Double,
     val strokeAlign: StrokeAlign,
     val styles: Map<String, String>,
     val layoutMode: LayoutMode,
-    val itemSpacing: Int,
+    val itemSpacing: Double,
     val counterAxisAlignItems: AxisSizingMode,
     val primaryAxisAlignItems: AxisSizingMode,
-    val paddingLeft: Int,
-    val paddingRight: Int,
-    val paddingTop: Int,
-    val paddingBottom: Int,
+    val paddingLeft: Double,
+    val paddingRight: Double,
+    val paddingTop: Double,
+    val paddingBottom: Double,
     val effects: Array<Effect>,
 
     val componentPropertyDefinitions: Map<String, ComponentPropertyDefinition>
@@ -44,62 +44,5 @@ data class Component(
         return visitor.visit(this, additionalData)
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-
-        other as Component
-
-        if (blendMode != other.blendMode) return false
-        if (!components.contentEquals(other.components)) return false
-        if (absoluteBoundingBox != other.absoluteBoundingBox) return false
-        if (absoluteRenderBounds != other.absoluteRenderBounds) return false
-        if (constraints != other.constraints) return false
-        if (clipsContent != other.clipsContent) return false
-        if (!fills.contentEquals(other.fills)) return false
-        if (!strokes.contentEquals(other.strokes)) return false
-        if (cornerRadius != other.cornerRadius) return false
-        if (strokeWeight != other.strokeWeight) return false
-        if (strokeAlign != other.strokeAlign) return false
-        if (styles != other.styles) return false
-        if (layoutMode != other.layoutMode) return false
-        if (itemSpacing != other.itemSpacing) return false
-        if (counterAxisAlignItems != other.counterAxisAlignItems) return false
-        if (primaryAxisAlignItems != other.primaryAxisAlignItems) return false
-        if (paddingLeft != other.paddingLeft) return false
-        if (paddingRight != other.paddingRight) return false
-        if (paddingTop != other.paddingTop) return false
-        if (paddingBottom != other.paddingBottom) return false
-        if (!effects.contentEquals(other.effects)) return false
-        if (componentPropertyDefinitions != other.componentPropertyDefinitions) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = blendMode.hashCode()
-        result = 31 * result + components.contentHashCode()
-        result = 31 * result + absoluteBoundingBox.hashCode()
-        result = 31 * result + absoluteRenderBounds.hashCode()
-        result = 31 * result + constraints.hashCode()
-        result = 31 * result + clipsContent.hashCode()
-        result = 31 * result + fills.contentHashCode()
-        result = 31 * result + strokes.contentHashCode()
-        result = 31 * result + cornerRadius
-        result = 31 * result + strokeWeight
-        result = 31 * result + strokeAlign.hashCode()
-        result = 31 * result + styles.hashCode()
-        result = 31 * result + layoutMode.hashCode()
-        result = 31 * result + itemSpacing
-        result = 31 * result + counterAxisAlignItems.hashCode()
-        result = 31 * result + primaryAxisAlignItems.hashCode()
-        result = 31 * result + paddingLeft
-        result = 31 * result + paddingRight
-        result = 31 * result + paddingTop
-        result = 31 * result + paddingBottom
-        result = 31 * result + effects.contentHashCode()
-        result = 31 * result + componentPropertyDefinitions.hashCode()
-        return result
-    }
 
 }

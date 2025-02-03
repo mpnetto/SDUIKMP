@@ -10,87 +10,36 @@ import com.sacada.figma2sdui.data.nodes.properties.LayoutConstraint
 import com.sacada.figma2sdui.data.nodes.properties.Paint
 import com.sacada.figma2sdui.data.nodes.properties.Rectangle
 import com.sacada.figma2sdui.data.nodes.properties.Vector
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
+@SerialName("RECTANGLE")
 data class RectangleNode(
-    val blendMode: BlendMode,
-    val preserveRatio: Boolean,
-    val layoutAlign: LayoutAlign,
-    val layoutGrow: Int,
-    val constraints: LayoutConstraint,
-    val transitionNodeID: String,
-    val transitionDuration: Int,
-    val transitionEasing: EasingType,
-    val opacity: Int,
-    val absoluteBoundingBox: Rectangle,
-    val absoluteRenderBounds: Rectangle,
-    val effects: Array<Effect>,
-    val size: Vector,
-    val isMask: Boolean,
-    val fills: Array<Paint>,
-    val strokes: Array<Paint>,
-    val strokeWeight: Int,
-    val styles: Map<String, String>,
-    val cornerRadius: Float,
-    val rectangleCornerRadii: Array<Float>
+    val blendMode: BlendMode = BlendMode.NORMAL,
+    val preserveRatio: Boolean = false,
+    val layoutAlign: LayoutAlign = LayoutAlign.INHERIT,
+    val layoutGrow: Double = 0.0,
+    val constraints: LayoutConstraint? = null,
+    val transitionNodeID: String = "",
+    val transitionDuration: Int = 0,
+    val transitionEasing: EasingType = EasingType.EASE_IN_AND_OUT,
+    val opacity: Int = 100,
+    val absoluteBoundingBox: Rectangle? = null,
+    val absoluteRenderBounds: Rectangle? = null,
+    val effects: Array<Effect> = emptyArray(),
+    val size: Vector = Vector(0.0, 0.0),
+    val isMask: Boolean = false,
+    val fills: Array<Paint> = emptyArray(),
+    val strokes: Array<Paint> = emptyArray(),
+    val strokeWeight: Double = 0.0,
+    val styles: Map<String, String> = emptyMap(),
+    val cornerRadius: Float = 0.0f,
+    val rectangleCornerRadii: Array<Float> = emptyArray()
 ) : BaseComponent() {
 
     override fun <T> accept(visitor: Visitor<T>, additionalData: AdditionalData?): T {
         return visitor.visit(this, additionalData)
     }
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null || this::class != other::class) return false
-
-        other as RectangleNode
-
-        if (blendMode != other.blendMode) return false
-        if (preserveRatio != other.preserveRatio) return false
-        if (layoutAlign != other.layoutAlign) return false
-        if (layoutGrow != other.layoutGrow) return false
-        if (constraints != other.constraints) return false
-        if (transitionNodeID != other.transitionNodeID) return false
-        if (transitionDuration != other.transitionDuration) return false
-        if (transitionEasing != other.transitionEasing) return false
-        if (opacity != other.opacity) return false
-        if (absoluteBoundingBox != other.absoluteBoundingBox) return false
-        if (absoluteRenderBounds != other.absoluteRenderBounds) return false
-        if (!effects.contentEquals(other.effects)) return false
-        if (size != other.size) return false
-        if (isMask != other.isMask) return false
-        if (!fills.contentEquals(other.fills)) return false
-        if (!strokes.contentEquals(other.strokes)) return false
-        if (strokeWeight != other.strokeWeight) return false
-        if (styles != other.styles) return false
-        if (cornerRadius != other.cornerRadius) return false
-        if (!rectangleCornerRadii.contentEquals(other.rectangleCornerRadii)) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = blendMode.hashCode()
-        result = 31 * result + preserveRatio.hashCode()
-        result = 31 * result + layoutAlign.hashCode()
-        result = 31 * result + layoutGrow
-        result = 31 * result + constraints.hashCode()
-        result = 31 * result + transitionNodeID.hashCode()
-        result = 31 * result + transitionDuration
-        result = 31 * result + transitionEasing.hashCode()
-        result = 31 * result + opacity
-        result = 31 * result + absoluteBoundingBox.hashCode()
-        result = 31 * result + absoluteRenderBounds.hashCode()
-        result = 31 * result + effects.contentHashCode()
-        result = 31 * result + size.hashCode()
-        result = 31 * result + isMask.hashCode()
-        result = 31 * result + fills.contentHashCode()
-        result = 31 * result + strokes.contentHashCode()
-        result = 31 * result + strokeWeight
-        result = 31 * result + styles.hashCode()
-        result = 31 * result + cornerRadius.hashCode()
-        result = 31 * result + rectangleCornerRadii.contentHashCode()
-        return result
-    }
 }

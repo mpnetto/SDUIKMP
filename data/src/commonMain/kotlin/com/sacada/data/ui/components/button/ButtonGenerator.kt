@@ -29,13 +29,13 @@ object ButtonGenerator : Component.Generator {
                 instance.componentProperties.forEach { (key, value) ->
                     when {
                         key.contains("label", ignoreCase = true) -> {
-                            put("label", JsonPrimitive(value.value))
+                            put("label",value.value)
                         }
                         key.contains("onClick", ignoreCase = true) -> {
-                            put("onClick", JsonPrimitive(value.value))
+                            put("onClick", value.value)
                         }
                         key.contains("disabled", ignoreCase = true) -> {
-                            put("disabled", JsonPrimitive(value.value.toBoolean()))
+                            put("disabled", value.value)
                         }
                     }
                 }

@@ -17,19 +17,19 @@ sealed class ComponentType(val type: String) {
 
     companion object {
         fun fromType(value: String): ComponentType = when (value) {
-            "Box" -> Box
-            "Button" -> Button
-            "BottomBar" -> BottomBar
-            "Checkbox" -> Checkbox
-            "Column" -> Column
+            "BOX", "Box" -> Box
+            "BUTTON", "Button" -> Button
+            "BOTTOM_BAR", "BottomBar" -> BottomBar
+            "CHECKBOX", "Checkbox" -> Checkbox
+            "COLUMN", "Column" -> Column
             "FloatingActionButton" -> FloatingActionButton
             "Icon" -> Icon
             "IconButton" -> IconButton
             "Image" -> Image
-            "Row" -> Row
-            "Text" -> Text
-            "TextField" -> TextField
-            "TopBar" -> TopBar
+            "ROW", "Row" -> Row
+            "TEXT", "Text" -> Text
+            "TEXT_FIELD", "TextField" -> TextField
+            "TOP_BAR", "TopBar" -> TopBar
             else -> error("Unknown ComponentType: $value")
         }
     }

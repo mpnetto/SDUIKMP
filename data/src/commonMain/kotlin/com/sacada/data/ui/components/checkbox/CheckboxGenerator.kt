@@ -23,9 +23,9 @@ object CheckboxGenerator : Component.Generator {
             put("attributes", buildJsonObject {
                 instance.componentProperties.forEach { (key, value) ->
                     when {
-                        key.contains("label", ignoreCase = true) -> put("label", JsonPrimitive(value.value))
-                        key.contains("checked", ignoreCase = true) -> put("checked", JsonPrimitive(value.value.toBoolean()))
-                        key.contains("disabled", ignoreCase = true) -> put("disabled", JsonPrimitive(value.value.toBoolean()))
+                        key.contains("label", ignoreCase = true) -> put("label", value.value)
+                        key.contains("checked", ignoreCase = true) -> put("checked", value.value)
+                        key.contains("disabled", ignoreCase = true) -> put("disabled", value.value)
                     }
                 }
             })

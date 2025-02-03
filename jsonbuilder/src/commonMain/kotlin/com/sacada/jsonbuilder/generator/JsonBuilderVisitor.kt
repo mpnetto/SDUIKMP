@@ -77,8 +77,8 @@ class JsonBuilderVisitor : Visitor<JsonObject> {
                     put("paddingTop", JsonPrimitive(frame.paddingTop))
                     put("paddingBottom", JsonPrimitive(frame.paddingBottom))
                     put("itemSpacing", JsonPrimitive(frame.itemSpacing))
-                    put("verticalAlignment", JsonPrimitive(frame.constraints.vertical.name))
-                    put("horizontalAlignment", JsonPrimitive(frame.constraints.horizontal.name))
+                    put("verticalAlignment", JsonPrimitive(frame.constraints?.vertical?.name))
+                    put("horizontalAlignment", JsonPrimitive(frame.constraints?.horizontal?.name))
                 }
                 put("attributes", attributesJson)
 

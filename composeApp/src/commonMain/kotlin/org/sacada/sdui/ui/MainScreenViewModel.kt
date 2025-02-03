@@ -25,6 +25,9 @@ class MainScreenViewModel (
     private val _isLoading = mutableStateOf(false)
     val isLoading: State<Boolean> = _isLoading
 
+    private val _currentScreenIndex = mutableIntStateOf(0)
+    val currentScreenIndex: State<Int> = _currentScreenIndex
+
     private var isFetching = false
 
 //    private val screenDao = (application as CustomApplication).database.screenDao()
@@ -64,6 +67,22 @@ class MainScreenViewModel (
             } finally {
                 onComplete?.invoke()
             }
+        }
+    }
+
+    fun goToNextScreen() {
+        val currentIndex = _currentScreenIndex.value
+        _rootComponent.value?.screens?.let {
+            if (currentIndex < it.size - 1) {
+                _currentScreenIndex.value = currentIndex + 1
+            }
+        }
+    }
+
+    fun goToPreviousScreen() {
+        val currentIndex = _currentScreenIndex.value
+        if (currentIndex > 0) {
+            _currentScreenIndex.value = currentIndex - 1
         }
     }
 }

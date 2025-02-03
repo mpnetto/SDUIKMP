@@ -13,23 +13,10 @@ class NodeHelper {
         )
 
         fun findComponentId(instance: BaseComponent): String? {
-            return try {
-//                val info = getReflectionInfo(instance::class)
-//
-//                val components = info.componentsProperty?.call(instance) as? Array<*>
-//                components?.forEach { component ->
-//                    (component as? BaseComponent)?.let { baseComponent ->
-//                        findComponentId(baseComponent)?.let { return it }
-//                    }
-//                }
-//
-//                val componentId = info.componentIdProperty?.call(instance) as? String
-//                if (componentId != null) return componentId
-
-                null
-            } catch (e: Exception) {
-                null
+            instance.resolveComponents()?.forEach { component ->
+                findComponentId(component)?.let { return it }
             }
+            return instance.resolveComponentId()
         }
 
 //        private fun getReflectionInfo(kClass: KClass<*>): ReflectionInfo =

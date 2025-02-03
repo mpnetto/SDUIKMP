@@ -20,7 +20,7 @@ class BooleanOperation(
     val blendMode: BlendMode,
     val preserveRatio: Boolean,
     val layoutAlign: LayoutAlign,
-    val layoutGrow: Int,
+    val layoutGrow: Double,
     val constraints: LayoutConstraint,
     val transitionNodeID: String,
     val transitionDuration: Int,
@@ -33,7 +33,7 @@ class BooleanOperation(
     val isMask: Boolean,
     val fills: Array<Paint>,
     val strokes: Array<Paint>,
-    val strokeWeight: Int,
+    val strokeWeight: Double,
     val styles: Map<String, String>,
 
     @SerialName("children") val components: Array<BaseComponent>,

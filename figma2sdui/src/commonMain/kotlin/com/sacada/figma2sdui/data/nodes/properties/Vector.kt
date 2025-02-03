@@ -3,6 +3,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Vector(
-    val x: Int,
-    val y: Int
+    val x: Double,
+    val y: Double
 )

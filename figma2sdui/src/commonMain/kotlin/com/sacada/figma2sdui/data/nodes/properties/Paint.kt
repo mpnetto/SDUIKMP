@@ -9,16 +9,16 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Paint(
     val type: PaintType,
-    val visible: Boolean,
-    val opacity: Int,
+    val visible: Boolean = true,
+    val opacity: Int = 100,
     val color: Color,
     val blendMode: BlendMode,
-    val gradientHandlePositions: Array<Vector>,
-    val gradientStops: Array<ColorStop>,
-    val scaleMode: ScaleMode,
+    val gradientHandlePositions: Array<Vector>? = null,
+    val gradientStops: Array<ColorStop>? = null,
+    val scaleMode: ScaleMode? = null,
     @Contextual
-    val rotation: Number,
-    val imageRef: String
+    val rotation: Number? = null,
+    val imageRef: String? = null
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

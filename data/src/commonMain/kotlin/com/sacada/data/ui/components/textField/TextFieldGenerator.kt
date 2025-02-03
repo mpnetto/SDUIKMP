@@ -23,17 +23,17 @@ object TextFieldGenerator : Component.Generator {
             put("attributes", buildJsonObject {
                 instance.componentProperties.forEach { (key, value) ->
                     when {
-                        key.contains("placeholder", ignoreCase = true) -> put("placeholder", JsonPrimitive(value.value))
-                        key.contains("supporting", ignoreCase = true) -> put("supportingText", JsonPrimitive(value.value))
-                        key.contains("label", ignoreCase = true) -> put("label", JsonPrimitive(value.value))
-                        key.contains("leading", ignoreCase = true) -> put("showLeadingIcon", JsonPrimitive(value.value.toBoolean()))
-                        key.contains("trailing", ignoreCase = true) -> put("showTrailingIcon", JsonPrimitive(value.value.toBoolean()))
+                        key.contains("placeholder", ignoreCase = true) -> put("placeholder",value.value)
+                        key.contains("supporting", ignoreCase = true) -> put("supportingText", value.value)
+                        key.contains("label", ignoreCase = true) -> put("label",value.value)
+                        key.contains("leading", ignoreCase = true) -> put("showLeadingIcon",value.value)
+                        key.contains("trailing", ignoreCase = true) -> put("showTrailingIcon", value.value)
                     }
                 }
                 put("validation", buildJsonObject {
-                    put("required", JsonPrimitive(instance.componentProperties["required"]?.value?.toBoolean() ?: true))
-                    put("minLength", JsonPrimitive(instance.componentProperties["minLength"]?.value?.toInt() ?: 5))
-                    put("regex", JsonPrimitive(instance.componentProperties["regex"]?.value ?: "^[a-zA-Z0-9_]*$"))
+                    put("required",instance.componentProperties["required"]?.value ?:  JsonPrimitive(true))
+                    put("minLength", instance.componentProperties["minLength"]?.value ?: JsonPrimitive(5))
+                    put("regex", instance.componentProperties["regex"]?.value ?: JsonPrimitive("^[a-zA-Z0-9_]*$"))
                 })
             })
         }
