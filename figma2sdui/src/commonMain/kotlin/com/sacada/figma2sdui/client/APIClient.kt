@@ -1,10 +1,8 @@
 package com.sacada.figma2sdui.client
 
-import com.sacada.figma2sdui.data.Result
 import de.jensklingenberg.ktorfit.http.GET
 import de.jensklingenberg.ktorfit.http.Header
 import de.jensklingenberg.ktorfit.http.Path
-import de.jensklingenberg.ktorfit.http.Query
 
 interface APIClient {
 
