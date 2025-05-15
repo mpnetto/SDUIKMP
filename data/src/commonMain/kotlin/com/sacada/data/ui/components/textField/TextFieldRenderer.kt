@@ -31,6 +31,7 @@ object TextFieldRenderer : Component.Renderer {
             Text(text = component.getStringAttribute("label"))
             TextField(
                 placeholder = { Text(text = component.getStringAttribute("placeholder")) },
+                supportingText = { Text(text = component.getStringAttribute("supportingText")) },
                 value = textValue.value,
                 isError = !isValid.value,
                 onValueChange = {
