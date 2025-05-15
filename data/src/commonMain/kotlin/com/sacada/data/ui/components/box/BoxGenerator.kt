@@ -12,25 +12,27 @@ import kotlinx.serialization.json.buildJsonObject
 
 @RegisterComponent
 object BoxGenerator : Component.Generator {
-
     override fun generateJson(
         instance: Instance,
         componentDescriptions: Map<String, RootComponentDescription>?,
-        performAction: ((MutableMap<String, JsonElement>) -> Unit)?
+        performAction: ((MutableMap<String, JsonElement>) -> Unit)?,
     ): JsonObject {
-
-        val boxJson = buildJsonObject {
-            put("id", JsonPrimitive(instance.id))
-            put("type", JsonPrimitive(instance.componentType.name.convertToCamelCase()))
-            put("attributes", buildJsonObject {
-                put("paddingLeft", JsonPrimitive(instance.paddingLeft))
-                put("paddingRight", JsonPrimitive(instance.paddingRight))
-                put("paddingTop", JsonPrimitive(instance.paddingTop))
-                put("paddingBottom", JsonPrimitive(instance.paddingBottom))
-                put("height", JsonPrimitive(instance.absoluteBoundingBox.height))
-                put("width", JsonPrimitive(instance.absoluteBoundingBox.width))
-            })
-        }
+        val boxJson =
+            buildJsonObject {
+                put("id", JsonPrimitive(instance.id))
+                put("type", JsonPrimitive(instance.componentType.name.convertToCamelCase()))
+                put(
+                    "attributes",
+                    buildJsonObject {
+                        put("paddingLeft", JsonPrimitive(instance.paddingLeft))
+                        put("paddingRight", JsonPrimitive(instance.paddingRight))
+                        put("paddingTop", JsonPrimitive(instance.paddingTop))
+                        put("paddingBottom", JsonPrimitive(instance.paddingBottom))
+                        put("height", JsonPrimitive(instance.absoluteBoundingBox.height))
+                        put("width", JsonPrimitive(instance.absoluteBoundingBox.width))
+                    },
+                )
+            }
 
         val mutableMap = boxJson.toMutableMap()
 

@@ -11,36 +11,38 @@ import kotlinx.serialization.json.buildJsonObject
 
 @RegisterComponent
 object ButtonGenerator : Component.Generator {
-
     override fun generateJson(
         instance: Instance,
         componentDescriptions: Map<String, RootComponentDescription>?,
-        performAction: ((MutableMap<String, JsonElement>) -> Unit)?
+        performAction: ((MutableMap<String, JsonElement>) -> Unit)?,
     ): JsonObject {
+        val buttonJson =
+            buildJsonObject {
+                put("id", JsonPrimitive(instance.id))
+                put("type", JsonPrimitive("Button"))
 
-        val buttonJson = buildJsonObject {
-            put("id", JsonPrimitive(instance.id))
-            put("type", JsonPrimitive("Button"))
+                put(
+                    "attributes",
+                    buildJsonObject {
+                        put("width", JsonPrimitive(instance.absoluteBoundingBox.width))
+                        put("height", JsonPrimitive(instance.absoluteBoundingBox.height))
 
-            put("attributes", buildJsonObject {
-                put("width", JsonPrimitive(instance.absoluteBoundingBox.width))
-                put("height", JsonPrimitive(instance.absoluteBoundingBox.height))
-
-                instance.componentProperties.forEach { (key, value) ->
-                    when {
-                        key.contains("label", ignoreCase = true) -> {
-                            put("label",value.value)
+                        instance.componentProperties.forEach { (key, value) ->
+                            when {
+                                key.contains("label", ignoreCase = true) -> {
+                                    put("label", value.value)
+                                }
+                                key.contains("onClick", ignoreCase = true) -> {
+                                    put("onClick", value.value)
+                                }
+                                key.contains("disabled", ignoreCase = true) -> {
+                                    put("disabled", value.value)
+                                }
+                            }
                         }
-                        key.contains("onClick", ignoreCase = true) -> {
-                            put("onClick", value.value)
-                        }
-                        key.contains("disabled", ignoreCase = true) -> {
-                            put("disabled", value.value)
-                        }
-                    }
-                }
-            })
-        }
+                    },
+                )
+            }
 
         val mutableMap = buttonJson.toMutableMap()
 

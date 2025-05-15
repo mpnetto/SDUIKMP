@@ -21,17 +21,20 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @RegisterComponent
 object CheckboxRenderer : Component.Renderer {
     @Composable
-    override fun Render(component: ViewComponent, modifier: Modifier?) {
+    override fun Render(
+        component: ViewComponent,
+        modifier: Modifier?,
+    ) {
         val isChecked = rememberSaveable { mutableStateOf(false) }
         val labelText = component.getStringAttribute("label")
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(0.dp, 0.dp, 12.dp, 0.dp)
+            modifier = Modifier.padding(0.dp, 0.dp, 12.dp, 0.dp),
         ) {
             Checkbox(
                 checked = isChecked.value,
-                onCheckedChange = { isChecked.value = it }
+                onCheckedChange = { isChecked.value = it },
             )
             Text(text = labelText, textAlign = TextAlign.Center)
         }
@@ -45,9 +48,9 @@ fun PreviewRenderCheckbox() {
         ViewComponent(
             type = "Checkbox",
             attributes =
-            mapOf(
-                "label" to JsonPrimitive("Accept Terms and Conditions")
-            )
+                mapOf(
+                    "label" to JsonPrimitive("Accept Terms and Conditions"),
+                ),
         )
     CheckboxRenderer.Render(component = sampleComponent)
 }

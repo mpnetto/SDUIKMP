@@ -15,7 +15,10 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @RegisterComponent
 object IconRenderer : Component.Renderer {
     @Composable
-    override fun Render(component: ViewComponent, modifier: Modifier?) {
+    override fun Render(
+        component: ViewComponent,
+        modifier: Modifier?,
+    ) {
         val iconName = component.getStringAttribute("iconName")
         val contentDescription = component.getStringAttribute("contentDescription")
 
@@ -23,7 +26,7 @@ object IconRenderer : Component.Renderer {
             Box {
                 Icon(
                     imageVector = getIconResource(iconName),
-                    contentDescription = contentDescription
+                    contentDescription = contentDescription,
                 )
             }
         }
@@ -33,13 +36,15 @@ object IconRenderer : Component.Renderer {
 @Preview()
 @Composable
 fun PreviewRenderIcon() {
-    val testComponent = ViewComponent(
-        type = "IconButton",
-        attributes = mapOf(
-            "iconName" to JsonPrimitive("add"),
-            "contentDescription" to JsonPrimitive("Adicionar")
+    val testComponent =
+        ViewComponent(
+            type = "IconButton",
+            attributes =
+                mapOf(
+                    "iconName" to JsonPrimitive("add"),
+                    "contentDescription" to JsonPrimitive("Adicionar"),
+                ),
         )
-    )
 
     IconRenderer.Render(component = testComponent)
 }

@@ -17,7 +17,10 @@ import com.sacada.data.util.parseJson
 @RegisterComponent
 object TextRenderer : Component.Renderer {
     @Composable
-    override fun Render(component: ViewComponent, modifier: Modifier?) {
+    override fun Render(
+        component: ViewComponent,
+        modifier: Modifier?,
+    ) {
         val textStyle = component.getTextStyle()
         val padding = component.getPadding()
 
@@ -25,7 +28,7 @@ object TextRenderer : Component.Renderer {
             text = component.getStringAttribute("content"),
             style = textStyle,
             modifier = Modifier.padding(padding),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
     }
 }

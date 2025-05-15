@@ -19,7 +19,10 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @RegisterComponent
 object TextFieldRenderer : Component.Renderer {
     @Composable
-    override fun Render(component: ViewComponent, modifier: Modifier?) {
+    override fun Render(
+        component: ViewComponent,
+        modifier: Modifier?,
+    ) {
 //        val viewModel = LocalScreenViewModel.current
         val textValue = remember { mutableStateOf("") }
         val isValid = remember { mutableStateOf(component.isValid("")) }
@@ -34,7 +37,7 @@ object TextFieldRenderer : Component.Renderer {
                     textValue.value = it
                     isValid.value = component.isValid(it)
 //                    viewModel.updateComponentState(component.id, isValid.value)
-                }
+                },
             )
         }
     }

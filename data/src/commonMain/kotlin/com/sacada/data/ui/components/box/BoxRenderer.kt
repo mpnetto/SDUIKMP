@@ -19,7 +19,10 @@ import com.sacada.data.util.getPadding
 @RegisterComponent
 object BoxRenderer : Component.Renderer {
     @Composable
-    override fun Render(component: ViewComponent, modifier: Modifier?) {
+    override fun Render(
+        component: ViewComponent,
+        modifier: Modifier?,
+    ) {
         val padding = remember { component.getPadding() }
 
         val height = component.getStringAttribute("height").toFloatOrNull()?.dp ?: 0.dp
@@ -27,10 +30,11 @@ object BoxRenderer : Component.Renderer {
 
         Box(
             contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .width(width)
-                .height(height)
-                .padding(padding)
+            modifier =
+                Modifier
+                    .width(width)
+                    .height(height)
+                    .padding(padding),
         ) {
             component.children.forEach { child ->
                 RenderComponent(child)

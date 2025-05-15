@@ -10,8 +10,8 @@ import com.sacada.data.ui.components.button.ButtonGenerator
 import com.sacada.data.ui.components.button.ButtonRenderer
 import com.sacada.data.ui.components.checkbox.CheckboxGenerator
 import com.sacada.data.ui.components.checkbox.CheckboxRenderer
-import com.sacada.data.ui.components.column.ColumnRenderer
 import com.sacada.data.ui.components.column.ColumnGenerator
+import com.sacada.data.ui.components.column.ColumnRenderer
 import com.sacada.data.ui.components.floatingActionButton.FloatingActionButtonGenerator
 import com.sacada.data.ui.components.floatingActionButton.FloatingActionButtonRenderer
 import com.sacada.data.ui.components.icon.IconGenerator
@@ -30,7 +30,6 @@ import com.sacada.data.ui.components.topBar.TopBarGenerator
 import com.sacada.data.ui.components.topBar.TopBarRenderer
 
 object ComponentRegistry {
-
     fun getRenderer(type: String): Renderer =
         when (ComponentType.fromType(type)) {
             ComponentType.Box -> BoxRenderer
@@ -64,5 +63,4 @@ object ComponentRegistry {
             ComponentType.TextField -> TextFieldGenerator
             ComponentType.TopBar -> TopBarGenerator
         }
-
 }

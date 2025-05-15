@@ -25,7 +25,10 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @RegisterComponent
 object ColumnRenderer : Component.Renderer {
     @Composable
-    override fun Render(component: ViewComponent, modifier: Modifier?) {
+    override fun Render(
+        component: ViewComponent,
+        modifier: Modifier?,
+    ) {
         val horizontalAlignment = component.resolveHorizontalAlignment()
         val verticalAlignment = component.resolveVerticalAlignment()
         val verticalArrangement = component.resolveVerticalArrangement(verticalAlignment)
@@ -34,29 +37,32 @@ object ColumnRenderer : Component.Renderer {
         val layoutSizingHorizontal = component.getStringAttribute("layoutSizingHorizontal")
         val layoutSizingVertical = component.getStringAttribute("layoutSizingVertical")
 
-        val widthModifier = when (layoutSizingHorizontal) {
-            "FILL" -> Modifier.fillMaxWidth()
-            "HUG" -> Modifier.wrapContentWidth()
-            else -> Modifier
-        }
+        val widthModifier =
+            when (layoutSizingHorizontal) {
+                "FILL" -> Modifier.fillMaxWidth()
+                "HUG" -> Modifier.wrapContentWidth()
+                else -> Modifier
+            }
 
-        val heightModifier = when (layoutSizingVertical) {
-            "FILL" -> Modifier.fillMaxHeight()
-            "HUG" -> Modifier.wrapContentHeight()
-            else -> Modifier
-        }
+        val heightModifier =
+            when (layoutSizingVertical) {
+                "FILL" -> Modifier.fillMaxHeight()
+                "HUG" -> Modifier.wrapContentHeight()
+                else -> Modifier
+            }
 
         Column(
-            modifier = (modifier ?: Modifier)
-                .then(widthModifier)
-                .then(heightModifier)
-                .padding(padding),
+            modifier =
+                (modifier ?: Modifier)
+                    .then(widthModifier)
+                    .then(heightModifier)
+                    .padding(padding),
             horizontalAlignment = horizontalAlignment,
-            verticalArrangement = verticalArrangement
+            verticalArrangement = verticalArrangement,
         ) {
             component.children.forEach { child ->
                 RenderComponent(
-                    child
+                    child,
                 )
             }
         }
@@ -66,7 +72,8 @@ object ColumnRenderer : Component.Renderer {
 @Preview()
 @Composable
 fun PreviewRenderColumn_Varied() {
-    val sampleComponent = """
+    val sampleComponent =
+        """
         {
             "id" : "88:392",
             "type" : "Column",

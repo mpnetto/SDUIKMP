@@ -21,7 +21,10 @@ import com.sacada.data.util.resolveVerticalAlignment
 @RegisterComponent
 object RowRenderer : Component.Renderer {
     @Composable
-    override fun Render(component: ViewComponent, modifier: Modifier?) {
+    override fun Render(
+        component: ViewComponent,
+        modifier: Modifier?,
+    ) {
         val horizontalArrangement = component.resolveHorizontalArrangement()
         val verticalAlignment = component.resolveVerticalAlignment()
 
@@ -29,25 +32,28 @@ object RowRenderer : Component.Renderer {
         val layoutSizingHorizontal = component.getStringAttribute("layoutSizingHorizontal")
         val layoutSizingVertical = component.getStringAttribute("layoutSizingVertical")
 
-        val widthModifier = when (layoutSizingHorizontal) {
-            "FILL" -> Modifier.fillMaxWidth()
-            "HUG" -> Modifier.wrapContentWidth()
-            else -> Modifier
-        }
+        val widthModifier =
+            when (layoutSizingHorizontal) {
+                "FILL" -> Modifier.fillMaxWidth()
+                "HUG" -> Modifier.wrapContentWidth()
+                else -> Modifier
+            }
 
-        val heightModifier = when (layoutSizingVertical) {
-            "FILL" -> Modifier.fillMaxHeight()
-            "HUG" -> Modifier.wrapContentHeight()
-            else -> Modifier
-        }
+        val heightModifier =
+            when (layoutSizingVertical) {
+                "FILL" -> Modifier.fillMaxHeight()
+                "HUG" -> Modifier.wrapContentHeight()
+                else -> Modifier
+            }
 
         Row(
-            modifier = Modifier
-                .then(widthModifier)
-                .then(heightModifier)
-                .padding(padding),
+            modifier =
+                Modifier
+                    .then(widthModifier)
+                    .then(heightModifier)
+                    .padding(padding),
             horizontalArrangement = horizontalArrangement,
-            verticalAlignment = verticalAlignment
+            verticalAlignment = verticalAlignment,
         ) {
             component.children.forEach { child ->
                 RenderComponent(child)

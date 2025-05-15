@@ -15,30 +15,33 @@ import kotlinx.serialization.json.buildJsonObject
 
 @RegisterComponent
 object BottomBarGenerator : Component.Generator {
-
     override fun generateJson(
         instance: Instance,
         componentDescriptions: Map<String, RootComponentDescription>?,
-        performAction: ((MutableMap<String, JsonElement>) -> Unit)?
+        performAction: ((MutableMap<String, JsonElement>) -> Unit)?,
     ): JsonObject {
-        val bottomAppBarJson = buildJsonObject {
-            put("id", JsonPrimitive(instance.id))
-            put("type", JsonPrimitive(instance.componentType.name.convertToCamelCase()))
-            put("children", buildJsonArray {
-                instance.components.forEach { child ->
-                    (child as? Frame)?.components?.forEach { component ->
-                        component as Instance
-                        add(
-                            if (component.name == "FAB") {
-                                createActionJson(component, componentDescriptions!!, "FloatingActionButton")
-                            } else {
-                                createActionJson(component, componentDescriptions!!, "Action")
+        val bottomAppBarJson =
+            buildJsonObject {
+                put("id", JsonPrimitive(instance.id))
+                put("type", JsonPrimitive(instance.componentType.name.convertToCamelCase()))
+                put(
+                    "children",
+                    buildJsonArray {
+                        instance.components.forEach { child ->
+                            (child as? Frame)?.components?.forEach { component ->
+                                component as Instance
+                                add(
+                                    if (component.name == "FAB") {
+                                        createActionJson(component, componentDescriptions!!, "FloatingActionButton")
+                                    } else {
+                                        createActionJson(component, componentDescriptions!!, "Action")
+                                    },
+                                )
                             }
-                        )
-                    }
-                }
-            })
-        }
+                        }
+                    },
+                )
+            }
 
         val mutableMap = bottomAppBarJson.toMutableMap()
 
