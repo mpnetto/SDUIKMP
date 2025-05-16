@@ -18,11 +18,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
-import com.sacada.data.ui.screen.RenderScreen
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinContext
 import org.koin.compose.viewmodel.koinViewModel
-
+import org.sacada.data.ui.screen.RenderScreen
 
 @Composable
 fun MainScreen() {
@@ -34,73 +32,69 @@ fun MainScreen() {
         val isLoading by viewModel.isLoading
 
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .pointerInput(Unit) {
-                    detectHorizontalDragGestures { _, dragAmount ->
-                        if (dragAmount > 50) {
-                            viewModel.goToPreviousScreen()
-                        } else if (dragAmount < -50) {
-                            viewModel.goToNextScreen()
-                        }
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .pointerInput(Unit) {
+                        detectHorizontalDragGestures { _, dragAmount ->
+                            if (dragAmount > 50) {
+                                viewModel.goToPreviousScreen()
+                            } else if (dragAmount < -50) {
+                                viewModel.goToNextScreen()
+                            }
 //                        if (dragAmount > 50 || dragAmount < -50) {
 //                            viewModel.fetchData(showLoading = true)
 //                        }
-                    }
-                }
+                        }
+                    },
         ) {
             AnimatedContent(
                 targetState = currentScreenIndex,
                 transitionSpec = {
                     if (targetState > initialState) {
-
                         slideInHorizontally(
                             initialOffsetX = { it },
-                            animationSpec = tween(300)
-                        ) togetherWith slideOutHorizontally(
-                            targetOffsetX = { -it },
-                            animationSpec = tween(300)
-                        )
+                            animationSpec = tween(300),
+                        ) togetherWith
+                            slideOutHorizontally(
+                                targetOffsetX = { -it },
+                                animationSpec = tween(300),
+                            )
                     } else {
-
                         slideInHorizontally(
                             initialOffsetX = { -it },
-                            animationSpec = tween(300)
-                        ) togetherWith slideOutHorizontally(
-                            targetOffsetX = { it },
-                            animationSpec = tween(300)
-                        )
+                            animationSpec = tween(300),
+                        ) togetherWith
+                            slideOutHorizontally(
+                                targetOffsetX = { it },
+                                animationSpec = tween(300),
+                            )
                     }
-                }
+                },
             ) { targetIndex ->
                 key(updateKey) {
                     rootComponent?.screens?.getOrNull(targetIndex)?.let { RenderScreen(it) }
                 }
             }
 
-
             if (isLoading) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(androidx.compose.ui.graphics.Color.Black.copy(alpha = 0.3f))
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .background(
+                                androidx.compose.ui.graphics.Color.Black
+                                    .copy(alpha = 0.3f),
+                            ),
                 ) {
                     CircularProgressIndicator(
-                        modifier = Modifier
-                            .size(50.dp)
-                            .align(Alignment.Center)
+                        modifier =
+                            Modifier
+                                .size(50.dp)
+                                .align(Alignment.Center),
                     )
                 }
             }
         }
-
     }
-
-
-}
-
-@Preview
-@Composable
-fun PreviewTestScreen() {
-    MainScreen()
 }

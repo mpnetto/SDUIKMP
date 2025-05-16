@@ -1,21 +1,18 @@
 package org.sacada.sdui.ui
 
-
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import com.sacada.core.model.ViewScreens
-import com.sacada.core.util.JsonParser
-import com.sacada.jsonbuilder.convertFigmaData
+import org.sacada.core.model.ViewScreens
+import org.sacada.core.util.JsonParser
+import org.sacada.jsonbuilder.convertFigmaData
 
-
-class MainScreenViewModel (
+class MainScreenViewModel(
 //    application: Application
 ) : ViewModel() {
-
     private val _rootComponent = mutableStateOf<ViewScreens?>(null)
     val rootComponent: State<ViewScreens?> = _rootComponent
 
@@ -36,7 +33,10 @@ class MainScreenViewModel (
         fetchData()
     }
 
-    fun fetchData(onComplete: (() -> Unit)? = null, showLoading: Boolean = false) {
+    fun fetchData(
+        onComplete: (() -> Unit)? = null,
+        showLoading: Boolean = false,
+    ) {
         if (isFetching) return
         isFetching = true
 
@@ -50,7 +50,7 @@ class MainScreenViewModel (
 //                }
                 convertFigmaData(
                     apiKey = "figd_xjEUEhJs8g0pBeToo8tGr9HqEYbIniWSSyXcleIh",
-                    fileKey = "AoKFU3cc2C8hr74wq6lDca"
+                    fileKey = "AoKFU3cc2C8hr74wq6lDca",
                 ) { result ->
                     isFetching = false
                     if (showLoading) _isLoading.value = false

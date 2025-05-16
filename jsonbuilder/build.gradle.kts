@@ -18,7 +18,7 @@ kotlin {
     listOf(
         iosX64(),
         iosArm64(),
-        iosSimulatorArm64()
+        iosSimulatorArm64(),
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "JsonBuilder"
@@ -37,16 +37,21 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.gson)
         }
-
     }
 }
 
 android {
-    namespace = "com.sacada.jsonbuilder"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    namespace = "org.sacada.jsonbuilder"
+    compileSdk =
+        libs.versions.android.compileSdk
+            .get()
+            .toInt()
 
     defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
+        minSdk =
+            libs.versions.android.minSdk
+                .get()
+                .toInt()
     }
     packaging {
         resources {

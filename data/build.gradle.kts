@@ -20,7 +20,7 @@ kotlin {
     listOf(
         iosX64(),
         iosArm64(),
-        iosSimulatorArm64()
+        iosSimulatorArm64(),
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "Data"
@@ -31,6 +31,10 @@ kotlin {
     jvm("desktop")
 
     sourceSets {
+
+        androidMain.dependencies {
+            implementation(compose.components.uiToolingPreview)
+        }
 
         commonMain.dependencies {
             implementation(projects.core)
@@ -48,16 +52,21 @@ kotlin {
             implementation(kotlin("reflect"))
             implementation(libs.kotlinx.serialization.json)
         }
-
     }
 }
 
 android {
-    namespace = "com.sacada.data"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    namespace = "org.sacada.data"
+    compileSdk =
+        libs.versions.android.compileSdk
+            .get()
+            .toInt()
 
     defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
+        minSdk =
+            libs.versions.android.minSdk
+                .get()
+                .toInt()
     }
     packaging {
         resources {
@@ -69,9 +78,12 @@ android {
             isMinifyEnabled = false
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
 }
-
+dependencies {
+    debugImplementation(libs.androidx.ui.tooling)
+}

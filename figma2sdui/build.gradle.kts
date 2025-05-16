@@ -20,7 +20,7 @@ kotlin {
     listOf(
         iosX64(),
         iosArm64(),
-        iosSimulatorArm64()
+        iosSimulatorArm64(),
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "Figma2SDUI"
@@ -41,10 +41,10 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
             implementation(kotlin("reflect"))
 
-            //Ktorfit
+            // Ktorfit
             implementation(libs.ktorfit.lib)
 
-            //Ktor
+            // Ktor
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.serialization.kotlinx.json)
@@ -54,16 +54,21 @@ kotlin {
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
-
     }
 }
 
 android {
-    namespace = "com.sacada.figma2sdui"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    namespace = "org.sacada.figma2sdui"
+    compileSdk =
+        libs.versions.android.compileSdk
+            .get()
+            .toInt()
 
     defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
+        minSdk =
+            libs.versions.android.minSdk
+                .get()
+                .toInt()
     }
     packaging {
         resources {
