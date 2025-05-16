@@ -30,7 +30,7 @@ object TextFieldRenderer : Component.Renderer {
         Column {
             Text(text = component.getStringAttribute("label"))
             TextField(
-//                placeholder = { Text(text = component.getStringAttribute("placeholder")) },
+                placeholder = { Text(text = component.getStringAttribute("placeholder")) },
                 supportingText = { Text(text = component.getStringAttribute("supportingText")) },
                 value = textValue.value,
                 isError = !isValid.value,
