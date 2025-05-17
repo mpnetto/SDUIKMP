@@ -92,7 +92,10 @@ class JsonBuilderVisitor : Visitor<JsonObject> {
                         put("paddingBottom", JsonPrimitive(frame.paddingBottom))
                         put("itemSpacing", JsonPrimitive(frame.itemSpacing))
                         put("verticalAlignment", JsonPrimitive(frame.constraints?.vertical?.name))
-                        put("horizontalAlignment", JsonPrimitive(frame.constraints?.horizontal?.name))
+                        put(
+                            "horizontalAlignment",
+                            JsonPrimitive(frame.constraints?.horizontal?.name),
+                        )
                     }
                 put("attributes", attributesJson)
 
@@ -120,7 +123,8 @@ class JsonBuilderVisitor : Visitor<JsonObject> {
                                 }
                             }
                     } else if (typeString?.contains("Column") == true) {
-                        val attributes = (componentJson["attributes"] as? JsonObject) ?: buildJsonObject {}
+                        val attributes =
+                            (componentJson["attributes"] as? JsonObject) ?: buildJsonObject {}
                         val updatedAttributes =
                             buildJsonObject {
                                 attributes.forEach { (k, v) ->
@@ -140,7 +144,8 @@ class JsonBuilderVisitor : Visitor<JsonObject> {
                                 }
                             }
                     } else if (typeString?.contains("Row") == true) {
-                        val attributes = (componentJson["attributes"] as? JsonObject) ?: buildJsonObject {}
+                        val attributes =
+                            (componentJson["attributes"] as? JsonObject) ?: buildJsonObject {}
                         val updatedAttributes =
                             buildJsonObject {
                                 attributes.forEach { (k, v) ->
@@ -175,37 +180,27 @@ class JsonBuilderVisitor : Visitor<JsonObject> {
                 }
             }
         } else if (frame.componentType == ComponentType.COLUMN) {
-            // COLUMN
-            val childrenJsonArray =
-                buildJsonArray {
-                    frame.components.forEach { component ->
-                        val componentJson = component.accept(this@JsonBuilderVisitor)
-                        if (!componentJson.isEmpty()) {
-                            add(componentJson)
+            val generator = frame.componentType.name.let { ComponentRegistry.getGenerator(it) }
+
+            val json =
+                generator.generateJson(frame) { mutableMap ->
+
+                    val childrenArray =
+                        buildJsonArray {
+                            frame.components.forEach { child ->
+                                val childJson = child.accept(this@JsonBuilderVisitor)
+                                if (!childJson.isEmpty()) {
+                                    add(childJson)
+                                }
+                            }
                         }
-                    }
+
+                    mutableMap["children"] = childrenArray
+
+                    JsonObject(mutableMap)
                 }
-            return buildJsonObject {
-                put("id", JsonPrimitive(frame.id))
-                put("type", JsonPrimitive("Column"))
-                put(
-                    "attributes",
-                    buildJsonObject {
-                        put("paddingLeft", JsonPrimitive(frame.paddingLeft))
-                        put("paddingRight", JsonPrimitive(frame.paddingRight))
-                        put("paddingTop", JsonPrimitive(frame.paddingTop))
-                        put("paddingBottom", JsonPrimitive(frame.paddingBottom))
-                        put("itemSpacing", JsonPrimitive(frame.itemSpacing))
-                        put("horizontalAlignment", JsonPrimitive(frame.counterAxisAlignItems?.name ?: ""))
-                        put("verticalArrangement", JsonPrimitive(frame.primaryAxisAlignItems?.name ?: ""))
-                        put("layoutSizingHorizontal", JsonPrimitive(frame.layoutSizingHorizontal.name))
-                        put("layoutSizingVertical", JsonPrimitive(frame.layoutSizingVertical.name))
-                    },
-                )
-                if (childrenJsonArray.isNotEmpty()) {
-                    put("children", childrenJsonArray)
-                }
-            }
+
+            return json
         } else if (frame.componentType == ComponentType.ROW) {
             // ROW
             val childrenJsonArray =
@@ -229,8 +224,14 @@ class JsonBuilderVisitor : Visitor<JsonObject> {
                         put("paddingBottom", JsonPrimitive(frame.paddingBottom))
                         put("itemSpacing", JsonPrimitive(frame.itemSpacing))
                         put("verticalAlignment", JsonPrimitive(frame.counterAxisAlignItems.name))
-                        put("horizontalArrangement", JsonPrimitive(frame.primaryAxisAlignItems.name))
-                        put("layoutSizingHorizontal", JsonPrimitive(frame.layoutSizingHorizontal.name))
+                        put(
+                            "horizontalArrangement",
+                            JsonPrimitive(frame.primaryAxisAlignItems.name),
+                        )
+                        put(
+                            "layoutSizingHorizontal",
+                            JsonPrimitive(frame.layoutSizingHorizontal.name),
+                        )
                         put("layoutSizingVertical", JsonPrimitive(frame.layoutSizingVertical.name))
                     },
                 )
@@ -260,15 +261,13 @@ class JsonBuilderVisitor : Visitor<JsonObject> {
     ): JsonObject {
         val generator = instance.componentType.name.let { ComponentRegistry.getGenerator(it) }
 
-        val visitor = JsonBuilderVisitor()
-
         val json =
             generator?.generateJson(instance, componentDescriptions) { mutableMap ->
 
                 val childrenArray =
                     buildJsonArray {
                         instance.components.forEach { child ->
-                            val childJson = child.accept(visitor)
+                            val childJson = child.accept(this@JsonBuilderVisitor)
                             add(childJson)
                         }
                     }
@@ -327,12 +326,21 @@ class JsonBuilderVisitor : Visitor<JsonObject> {
                             // put("textCase", JsonPrimitive(text.style.textCase))
                             // put("textDecoration", JsonPrimitive(text.style.textDecoration))
                             // put("textAutoResize", JsonPrimitive(text.style.textAutoResize.name))
-                            put("textAlignHorizontal", JsonPrimitive(text.style.textAlignHorizontal.name))
-                            put("textAlignVertical", JsonPrimitive(text.style.textAlignVertical.name))
+                            put(
+                                "textAlignHorizontal",
+                                JsonPrimitive(text.style.textAlignHorizontal.name),
+                            )
+                            put(
+                                "textAlignVertical",
+                                JsonPrimitive(text.style.textAlignVertical.name),
+                            )
                             put("letterSpacing", JsonPrimitive(text.style.letterSpacing))
                             put("lineHeightPx", JsonPrimitive(text.style.lineHeightPx))
                             put("lineHeightPercent", JsonPrimitive(text.style.lineHeightPercent))
-                            put("lineHeightPercentFontSize", JsonPrimitive(text.style.lineHeightPercentFontSize))
+                            put(
+                                "lineHeightPercentFontSize",
+                                JsonPrimitive(text.style.lineHeightPercentFontSize),
+                            )
                             put("lineHeightUnit", JsonPrimitive(text.style.lineHeightUnit))
                         },
                     )

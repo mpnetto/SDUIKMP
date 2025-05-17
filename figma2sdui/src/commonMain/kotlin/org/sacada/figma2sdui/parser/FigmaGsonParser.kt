@@ -15,7 +15,6 @@ class FigmaGsonParser : Parser {
     override fun parse(input: String): Result<RootDocument> {
         try {
             val rootDocument = json.decodeFromString<RootDocument>(input)
-            Result.success(rootDocument)
             return Result.success(rootDocument)
         } catch (e: SerializationException) {
             return Result.failure(

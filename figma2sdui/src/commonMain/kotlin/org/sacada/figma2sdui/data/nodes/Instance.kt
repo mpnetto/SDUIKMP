@@ -7,6 +7,7 @@ import org.sacada.figma2sdui.data.Visitor
 import org.sacada.figma2sdui.data.nodes.enums.AxisSizingMode
 import org.sacada.figma2sdui.data.nodes.enums.BlendMode
 import org.sacada.figma2sdui.data.nodes.enums.LayoutMode
+import org.sacada.figma2sdui.data.nodes.enums.LayoutSizingMode
 import org.sacada.figma2sdui.data.nodes.enums.StrokeAlign
 import org.sacada.figma2sdui.data.nodes.properties.ComponentProperty
 import org.sacada.figma2sdui.data.nodes.properties.Effect
@@ -34,6 +35,8 @@ data class Instance(
     val itemSpacing: Double = 0.0,
     val counterAxisAlignItems: AxisSizingMode = AxisSizingMode.CENTER,
     val primaryAxisAlignItems: AxisSizingMode = AxisSizingMode.CENTER,
+    val layoutSizingHorizontal: LayoutSizingMode = LayoutSizingMode.FIXED,
+    val layoutSizingVertical: LayoutSizingMode = LayoutSizingMode.FIXED,
     val paddingLeft: Double = 0.0,
     val paddingRight: Double = 0.0,
     val paddingTop: Double = 0.0,

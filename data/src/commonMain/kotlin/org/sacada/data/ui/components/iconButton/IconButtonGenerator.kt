@@ -5,13 +5,13 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import org.sacada.annotation.RegisterComponent
 import org.sacada.data.ui.components.Component
-import org.sacada.figma2sdui.data.nodes.Instance
+import org.sacada.figma2sdui.data.nodes.BaseComponent
 import org.sacada.figma2sdui.data.nodes.properties.root.RootComponentDescription
 
 @RegisterComponent
 object IconButtonGenerator : Component.Generator {
     override fun generateJson(
-        instance: Instance,
+        baseComponent: BaseComponent,
         componentDescriptions: Map<String, RootComponentDescription>?,
         performAction: ((MutableMap<String, JsonElement>) -> Unit)?,
     ): JsonObject = buildJsonObject {}

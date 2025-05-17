@@ -11,6 +11,7 @@ import org.sacada.data.ui.components.ComponentHelper.Companion.createActionJson
 import org.sacada.data.ui.components.ComponentHelper.Companion.findComponentByName
 import org.sacada.data.util.convertToCamelCase
 import org.sacada.data.util.convertToPascalCase
+import org.sacada.figma2sdui.data.nodes.BaseComponent
 import org.sacada.figma2sdui.data.nodes.Frame
 import org.sacada.figma2sdui.data.nodes.Instance
 import org.sacada.figma2sdui.data.nodes.properties.root.RootComponentDescription
@@ -18,14 +19,16 @@ import org.sacada.figma2sdui.data.nodes.properties.root.RootComponentDescription
 @RegisterComponent
 object TextFieldGenerator : Component.Generator {
     override fun generateJson(
-        instance: Instance,
+        baseComponent: BaseComponent,
         componentDescriptions: Map<String, RootComponentDescription>?,
         performAction: ((MutableMap<String, JsonElement>) -> Unit)?,
     ): JsonObject {
+        baseComponent as Instance
+
         val children =
             buildJsonArray {
                 componentDescriptions?.let {
-                    val stateLayer = findComponentByName(instance, "state-layer")
+                    val stateLayer = findComponentByName(baseComponent, "state-layer")
 
                     if (stateLayer is Frame) {
                         stateLayer.components.forEach { child ->
@@ -45,52 +48,56 @@ object TextFieldGenerator : Component.Generator {
             }
 
         return buildJsonObject {
-            put("id", JsonPrimitive(instance.id))
-            put("type", JsonPrimitive(instance.componentType.name.convertToCamelCase()))
+            put("id", JsonPrimitive(baseComponent.id))
+            put("type", JsonPrimitive(baseComponent.componentType.name.convertToCamelCase()))
             put("children", children)
             put(
                 "attributes",
                 buildJsonObject {
-                    instance.componentProperties.forEach { (key, value) ->
+                    put("paddingLeft", JsonPrimitive(baseComponent.paddingLeft))
+                    put("paddingRight", JsonPrimitive(baseComponent.paddingRight))
+                    put("paddingTop", JsonPrimitive(baseComponent.paddingTop))
+                    put("paddingBottom", JsonPrimitive(baseComponent.paddingBottom))
+                    put("itemSpacing", JsonPrimitive(baseComponent.itemSpacing))
+                    put(
+                        "horizontalAlignment",
+                        JsonPrimitive(baseComponent.counterAxisAlignItems.name),
+                    )
+                    put(
+                        "verticalArrangement",
+                        JsonPrimitive(baseComponent.primaryAxisAlignItems.name ?: ""),
+                    )
+                    put(
+                        "layoutSizingHorizontal",
+                        JsonPrimitive(baseComponent.layoutSizingHorizontal.name),
+                    )
+                    put(
+                        "layoutSizingVertical",
+                        JsonPrimitive(baseComponent.layoutSizingVertical.name),
+                    )
+
+                    baseComponent.componentProperties.forEach { (key, value) ->
                         when {
                             key.contains("placeholder", ignoreCase = true) ->
-                                put(
-                                    "placeholder",
-                                    value.value,
-                                )
+                                put("placeholder", value.value)
 
                             key.contains("supporting", ignoreCase = true) ->
-                                put(
-                                    "supportingText",
-                                    value.value,
-                                )
+                                put("supportingText", value.value)
 
                             key.contains("label", ignoreCase = true) ->
-                                put(
-                                    "label",
-                                    value.value,
-                                )
+                                put("label", value.value)
 
-                            key.contains("leading", ignoreCase = true) -> {
+                            key.contains("leading", ignoreCase = true) ->
                                 put("showLeadingIcon", value.value)
-                            }
 
                             key.contains("trailing", ignoreCase = true) ->
-                                put(
-                                    "showTrailingIcon",
-                                    value.value,
-                                )
+                                put("showTrailingIcon", value.value)
 
                             key.contains("style", ignoreCase = true) ->
-                                put(
-                                    "style",
-                                    value.value,
-                                )
+                                put("style", value.value)
 
-                            key.contains(
-                                "text configurations",
-                                ignoreCase = true,
-                            ) -> put("textConfigurations", value.value)
+                            key.contains("text configurations", ignoreCase = true) ->
+                                put("textConfigurations", value.value)
                         }
                     }
                     put(
@@ -98,19 +105,19 @@ object TextFieldGenerator : Component.Generator {
                         buildJsonObject {
                             put(
                                 "required",
-                                instance.componentProperties["required"]?.value
+                                baseComponent.componentProperties["required"]?.value
                                     ?: JsonPrimitive(
                                         true,
                                     ),
                             )
                             put(
                                 "minLength",
-                                instance.componentProperties["minLength"]?.value
+                                baseComponent.componentProperties["minLength"]?.value
                                     ?: JsonPrimitive(5),
                             )
                             put(
                                 "regex",
-                                instance.componentProperties["regex"]?.value
+                                baseComponent.componentProperties["regex"]?.value
                                     ?: JsonPrimitive("^[a-zA-Z0-9_]*$"),
                             )
                         },

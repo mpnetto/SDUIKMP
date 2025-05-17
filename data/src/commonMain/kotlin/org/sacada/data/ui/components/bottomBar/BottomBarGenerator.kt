@@ -9,6 +9,7 @@ import org.sacada.annotation.RegisterComponent
 import org.sacada.data.ui.components.Component
 import org.sacada.data.ui.components.ComponentHelper.Companion.createActionJson
 import org.sacada.data.util.convertToCamelCase
+import org.sacada.figma2sdui.data.nodes.BaseComponent
 import org.sacada.figma2sdui.data.nodes.Frame
 import org.sacada.figma2sdui.data.nodes.Instance
 import org.sacada.figma2sdui.data.nodes.properties.root.RootComponentDescription
@@ -16,18 +17,20 @@ import org.sacada.figma2sdui.data.nodes.properties.root.RootComponentDescription
 @RegisterComponent
 object BottomBarGenerator : Component.Generator {
     override fun generateJson(
-        instance: Instance,
+        baseComponent: BaseComponent,
         componentDescriptions: Map<String, RootComponentDescription>?,
         performAction: ((MutableMap<String, JsonElement>) -> Unit)?,
     ): JsonObject {
+        baseComponent as Instance
+
         val bottomAppBarJson =
             buildJsonObject {
-                put("id", JsonPrimitive(instance.id))
-                put("type", JsonPrimitive(instance.componentType.name.convertToCamelCase()))
+                put("id", JsonPrimitive(baseComponent.id))
+                put("type", JsonPrimitive(baseComponent.componentType.name.convertToCamelCase()))
                 put(
                     "children",
                     buildJsonArray {
-                        instance.components.forEach { child ->
+                        baseComponent.components.forEach { child ->
                             (child as? Frame)?.components?.forEach { component ->
                                 component as Instance
                                 add(
