@@ -14,20 +14,25 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.outlined.Cancel
+import androidx.compose.material.icons.outlined.Email
 
-fun getIconResource(iconName: String) = when (iconName) {
-    "add" -> Icons.Default.Add
-    "edit" -> Icons.Default.Edit
-    "delete" -> Icons.Default.Delete
-    "done" -> Icons.Default.Done
-    "arrow_back" -> Icons.AutoMirrored.Filled.ArrowBack
-    "arrow_forward" -> Icons.AutoMirrored.Filled.ArrowForward
-    "help" -> Icons.Default.Warning
-    "menu" -> Icons.Default.Menu
-    "home" -> Icons.Default.Home
-    "search" -> Icons.Default.Search
-    "person" -> Icons.Default.Person
-    "settings" -> Icons.Default.Settings
-    "account_circle" -> Icons.Default.AccountCircle
-    else -> Icons.Default.Warning
-}
+fun getIconResource(iconName: String) =
+    when (iconName) {
+        "add" -> Icons.Default.Add
+        "edit" -> Icons.Default.Edit
+        "delete" -> Icons.Default.Delete
+        "done" -> Icons.Default.Done
+        "arrow_back" -> Icons.AutoMirrored.Filled.ArrowBack
+        "arrow_forward" -> Icons.AutoMirrored.Filled.ArrowForward
+        "help" -> Icons.Default.Warning
+        "mail" -> Icons.Outlined.Email
+        "menu" -> Icons.Default.Menu
+        "home" -> Icons.Default.Home
+        "search" -> Icons.Default.Search
+        "person" -> Icons.Default.Person
+        "settings" -> Icons.Default.Settings
+        "account_circle" -> Icons.Default.AccountCircle
+        "cancel" -> Icons.Outlined.Cancel
+        else -> Icons.Default.Warning
+    }

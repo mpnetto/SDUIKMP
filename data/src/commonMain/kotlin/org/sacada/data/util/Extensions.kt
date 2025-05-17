@@ -129,3 +129,11 @@ fun String.convertToCamelCase(): String =
         .map { segment ->
             segment.replaceFirstChar { ch -> ch.uppercaseChar() }
         }.joinToString("")
+
+fun String.convertToPascalCase(): String =
+    split('_', '-')
+        .filter { it.isNotEmpty() }
+        .mapIndexed { index, segment ->
+            val lower = segment.lowercase()
+            if (index == 0) lower else lower.replaceFirstChar { it.uppercaseChar() }
+        }.joinToString("")

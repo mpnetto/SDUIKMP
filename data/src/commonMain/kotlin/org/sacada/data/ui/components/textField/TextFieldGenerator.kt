@@ -3,10 +3,15 @@ package org.sacada.data.ui.components.textField
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import org.sacada.annotation.RegisterComponent
 import org.sacada.data.ui.components.Component
+import org.sacada.data.ui.components.ComponentHelper.Companion.createActionJson
+import org.sacada.data.ui.components.ComponentHelper.Companion.findComponentByName
 import org.sacada.data.util.convertToCamelCase
+import org.sacada.data.util.convertToPascalCase
+import org.sacada.figma2sdui.data.nodes.Frame
 import org.sacada.figma2sdui.data.nodes.Instance
 import org.sacada.figma2sdui.data.nodes.properties.root.RootComponentDescription
 
@@ -16,32 +21,102 @@ object TextFieldGenerator : Component.Generator {
         instance: Instance,
         componentDescriptions: Map<String, RootComponentDescription>?,
         performAction: ((MutableMap<String, JsonElement>) -> Unit)?,
-    ): JsonObject =
-        buildJsonObject {
+    ): JsonObject {
+        val children =
+            buildJsonArray {
+                componentDescriptions?.let {
+                    val stateLayer = findComponentByName(instance, "state-layer")
+
+                    if (stateLayer is Frame) {
+                        stateLayer.components.forEach { child ->
+                            when {
+                                child is Instance ->
+                                    add(
+                                        createActionJson(
+                                            child,
+                                            componentDescriptions,
+                                            child.name.convertToPascalCase(),
+                                        ),
+                                    )
+                            }
+                        }
+                    }
+                }
+            }
+
+        return buildJsonObject {
             put("id", JsonPrimitive(instance.id))
             put("type", JsonPrimitive(instance.componentType.name.convertToCamelCase()))
+            put("children", children)
             put(
                 "attributes",
                 buildJsonObject {
                     instance.componentProperties.forEach { (key, value) ->
                         when {
-                            key.contains("placeholder", ignoreCase = true) -> put("placeholder", value.value)
-                            key.contains("supporting", ignoreCase = true) -> put("supportingText", value.value)
-                            key.contains("label", ignoreCase = true) -> put("label", value.value)
-                            key.contains("leading", ignoreCase = true) -> put("showLeadingIcon", value.value)
-                            key.contains("trailing", ignoreCase = true) -> put("showTrailingIcon", value.value)
-                            key.contains("text configurations", ignoreCase = true) -> put("textConfigurations", value.value)
+                            key.contains("placeholder", ignoreCase = true) ->
+                                put(
+                                    "placeholder",
+                                    value.value,
+                                )
+
+                            key.contains("supporting", ignoreCase = true) ->
+                                put(
+                                    "supportingText",
+                                    value.value,
+                                )
+
+                            key.contains("label", ignoreCase = true) ->
+                                put(
+                                    "label",
+                                    value.value,
+                                )
+
+                            key.contains("leading", ignoreCase = true) -> {
+                                put("showLeadingIcon", value.value)
+                            }
+
+                            key.contains("trailing", ignoreCase = true) ->
+                                put(
+                                    "showTrailingIcon",
+                                    value.value,
+                                )
+
+                            key.contains("style", ignoreCase = true) ->
+                                put(
+                                    "style",
+                                    value.value,
+                                )
+
+                            key.contains(
+                                "text configurations",
+                                ignoreCase = true,
+                            ) -> put("textConfigurations", value.value)
                         }
                     }
                     put(
                         "validation",
                         buildJsonObject {
-                            put("required", instance.componentProperties["required"]?.value ?: JsonPrimitive(true))
-                            put("minLength", instance.componentProperties["minLength"]?.value ?: JsonPrimitive(5))
-                            put("regex", instance.componentProperties["regex"]?.value ?: JsonPrimitive("^[a-zA-Z0-9_]*$"))
+                            put(
+                                "required",
+                                instance.componentProperties["required"]?.value
+                                    ?: JsonPrimitive(
+                                        true,
+                                    ),
+                            )
+                            put(
+                                "minLength",
+                                instance.componentProperties["minLength"]?.value
+                                    ?: JsonPrimitive(5),
+                            )
+                            put(
+                                "regex",
+                                instance.componentProperties["regex"]?.value
+                                    ?: JsonPrimitive("^[a-zA-Z0-9_]*$"),
+                            )
                         },
                     )
                 },
             )
         }
+    }
 }
