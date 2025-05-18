@@ -12,8 +12,8 @@ fun convertFigmaData(
     fetchFigmaData(apiKey, fileKey) { rootDocument ->
         val converter = FigmaJsonConverter()
 
-        converter.convert(rootDocument!!)
+        val converted = converter.convert(rootDocument!!)
 
-        onResult(converter.convert(rootDocument))
+        onResult(converted)
     }
 }

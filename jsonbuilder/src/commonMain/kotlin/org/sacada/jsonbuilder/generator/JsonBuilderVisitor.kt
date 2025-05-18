@@ -81,6 +81,7 @@ class JsonBuilderVisitor : Visitor<JsonObject> {
         if (frame.componentType == ComponentType.SCREEN_FRAME) {
             return buildJsonObject {
                 put("id", JsonPrimitive(frame.id))
+                put("name", JsonPrimitive(frame.name))
                 put("type", JsonPrimitive("ScreenFrame"))
 
                 val attributesJson =

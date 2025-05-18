@@ -85,4 +85,8 @@ class MainScreenViewModel(
             _currentScreenIndex.value = currentIndex - 1
         }
     }
+
+    fun goToScreen(index: Int) {
+        _currentScreenIndex.value = index
+    }
 }
