@@ -2,7 +2,6 @@ package org.sacada.figma2sdui.data.nodes
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.sacada.figma2sdui.data.AdditionalData
 import org.sacada.figma2sdui.data.Visitor
 import org.sacada.figma2sdui.data.nodes.enums.BlendMode
 import org.sacada.figma2sdui.data.nodes.enums.EasingType
@@ -25,7 +24,7 @@ data class Vector(
     val transitionEasing: EasingType? = null,
     val opacity: Int = 100,
     val absoluteBoundingBox: Rectangle,
-    val absoluteRenderBounds: Rectangle,
+    val absoluteRenderBounds: Rectangle? = null,
     val effects: Array<Effect>,
     val size: Vector? = null,
     val isMask: Boolean = false,
@@ -37,6 +36,6 @@ data class Vector(
 ) : BaseComponent() {
     override fun <T> accept(
         visitor: Visitor<T>,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): T = visitor.visit(this, additionalData)
 }

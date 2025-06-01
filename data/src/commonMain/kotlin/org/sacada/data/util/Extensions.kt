@@ -8,11 +8,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonPrimitive
 import org.sacada.core.model.ViewComponent
-import org.sacada.core.model.handleAction
 import org.sacada.core.util.getStringAttribute
 import org.sacada.core.util.getSubAttributes
 
@@ -84,6 +84,7 @@ fun ViewComponent.resolveVerticalArrangement(verticalAlignment: Alignment.Vertic
     when {
         getStringAttribute("itemSpacing").toIntOrNull() != null ->
             Arrangement.spacedBy(getStringAttribute("itemSpacing").toInt().dp, verticalAlignment)
+
         getStringAttribute("verticalArrangement") == "SpaceBetween" -> Arrangement.SpaceBetween
         getStringAttribute("verticalArrangement") == "SpaceAround" -> Arrangement.SpaceAround
         getStringAttribute("verticalArrangement") == "SpaceEvenly" -> Arrangement.SpaceEvenly
@@ -114,8 +115,12 @@ fun ViewComponent.createActions(): @Composable RowScope.() -> Unit =
         }
     }
 
-fun ViewComponent.performAction() {
-    action?.let { handleAction(it) }
+fun ViewComponent.performAction(navController: NavController) {
+    when (action?.type) {
+        "NAVIGATE" -> action?.destination?.let { navController.navigate("screen/$it") }
+        "BACK" -> navController.popBackStack()
+//        "event" -> triggerEvent(action?.destination)
+    }
 }
 
 fun String.parseJson(): ViewComponent = Json.decodeFromString(this)

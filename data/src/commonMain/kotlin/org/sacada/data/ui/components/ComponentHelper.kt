@@ -6,6 +6,7 @@ import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.putJsonObject
 import org.sacada.data.ui.components.box.BoxGenerator
+import org.sacada.figma2sdui.data.NavigationData
 import org.sacada.figma2sdui.data.nodes.BaseComponent
 import org.sacada.figma2sdui.data.nodes.Frame
 import org.sacada.figma2sdui.data.nodes.Instance
@@ -18,12 +19,12 @@ class ComponentHelper {
             instance: Instance,
             componentDescriptions: Map<String, RootComponentDescription>,
             type: String,
+            navigationData: NavigationData? = null,
         ): JsonObject =
             BoxGenerator.generateJson(instance, componentDescriptions) { mutableMap ->
                 val childrenArray =
                     buildJsonArray {
                         val actionName = getIconName(instance, componentDescriptions)
-
                         val actionJson =
                             buildJsonObject {
                                 put("id", JsonPrimitive(instance.id))
@@ -35,6 +36,18 @@ class ComponentHelper {
 
                         add(actionJson)
                     }
+
+                if (navigationData != null) {
+                    val navigationJson =
+                        buildJsonObject {
+                            put("destination", JsonPrimitive(navigationData.destinationId))
+                            put(
+                                "type",
+                                JsonPrimitive(navigationData.navigation?.name),
+                            )
+                        }
+                    mutableMap["action"] = navigationJson
+                }
 
                 mutableMap["children"] = childrenArray
                 mutableMap["type"] = JsonPrimitive(type)
@@ -56,7 +69,8 @@ class ComponentHelper {
         ): BaseComponent? {
             if (root.name == name) return root
 
-            val children = (root as? Instance)?.components ?: (root as? Frame)?.components ?: emptyArray()
+            val children =
+                (root as? Instance)?.components ?: (root as? Frame)?.components ?: emptyArray()
             for (child in children) {
                 val result = findComponentByName(child, name)
                 if (result != null) return result

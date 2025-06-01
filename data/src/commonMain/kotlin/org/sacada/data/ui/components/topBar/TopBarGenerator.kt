@@ -9,10 +9,14 @@ import org.sacada.annotation.RegisterComponent
 import org.sacada.data.ui.components.Component
 import org.sacada.data.ui.components.ComponentHelper.Companion.createActionJson
 import org.sacada.data.util.convertToCamelCase
+import org.sacada.figma2sdui.data.NavigationData
 import org.sacada.figma2sdui.data.nodes.BaseComponent
 import org.sacada.figma2sdui.data.nodes.Frame
 import org.sacada.figma2sdui.data.nodes.Instance
 import org.sacada.figma2sdui.data.nodes.Text
+import org.sacada.figma2sdui.data.nodes.enums.ActionType
+import org.sacada.figma2sdui.data.nodes.enums.NavigationType
+import org.sacada.figma2sdui.data.nodes.enums.TriggerType
 import org.sacada.figma2sdui.data.nodes.properties.root.RootComponentDescription
 
 @RegisterComponent
@@ -29,14 +33,42 @@ object TopBarGenerator : Component.Generator {
                 componentDescriptions?.let {
                     baseComponent.components.forEachIndexed { index, child ->
                         when {
-                            index == 0 && child is Instance ->
+                            index == 0 && child is Instance -> {
+                                val navigationAction =
+                                    child.interactions
+                                        .firstOrNull { it.trigger?.type == TriggerType.ON_CLICK }
+                                        ?.actions
+                                        ?.firstNotNullOfOrNull { action ->
+                                            when {
+                                                action?.navigation == NavigationType.NAVIGATE ->
+                                                    NavigationData(
+                                                        destinationId = action.destinationId,
+                                                        navigation = action.navigation,
+                                                        transition = action.transition,
+                                                    )
+
+                                                action?.type == ActionType.BACK ->
+                                                    NavigationData(navigation = NavigationType.BACK)
+
+                                                else -> null
+                                            }
+                                        }
+
                                 add(
-                                    createActionJson(child, componentDescriptions, "navigationIcon"),
+                                    createActionJson(
+                                        child,
+                                        componentDescriptions,
+                                        "navigationIcon",
+                                        navigationAction,
+                                    ),
                                 )
+                            }
+
                             child is Instance ->
                                 add(
                                     createActionJson(child, componentDescriptions, "Action"),
                                 )
+
                             child is Frame -> {
                                 child.components.filterIsInstance<Instance>().forEach { sub ->
                                     add(createActionJson(sub, componentDescriptions, "Action"))
@@ -58,7 +90,11 @@ object TopBarGenerator : Component.Generator {
                     put("paddingTop", JsonPrimitive(baseComponent.paddingTop))
                     put("paddingBottom", JsonPrimitive(baseComponent.paddingBottom))
                     put("scrollBehavior", JsonPrimitive("pinned"))
-                    put("topBarType", baseComponent.componentProperties["Configuration"]?.value ?: JsonPrimitive("default"))
+                    put(
+                        "topBarType",
+                        baseComponent.componentProperties["Configuration"]?.value
+                            ?: JsonPrimitive("default"),
+                    )
                     (baseComponent.components.find { it is Text } as? Text)?.let {
                         put("title", JsonPrimitive(it.characters))
                     }

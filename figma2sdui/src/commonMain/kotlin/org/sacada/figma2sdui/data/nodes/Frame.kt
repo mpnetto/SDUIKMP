@@ -2,7 +2,6 @@ package org.sacada.figma2sdui.data.nodes
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.sacada.figma2sdui.data.AdditionalData
 import org.sacada.figma2sdui.data.Visitor
 import org.sacada.figma2sdui.data.nodes.enums.AxisSizingMode
 import org.sacada.figma2sdui.data.nodes.enums.BlendMode
@@ -10,6 +9,7 @@ import org.sacada.figma2sdui.data.nodes.enums.LayoutMode
 import org.sacada.figma2sdui.data.nodes.enums.LayoutSizingMode
 import org.sacada.figma2sdui.data.nodes.enums.StrokeAlign
 import org.sacada.figma2sdui.data.nodes.properties.Effect
+import org.sacada.figma2sdui.data.nodes.properties.Interaction
 import org.sacada.figma2sdui.data.nodes.properties.LayoutConstraint
 import org.sacada.figma2sdui.data.nodes.properties.Paint
 import org.sacada.figma2sdui.data.nodes.properties.Rectangle
@@ -39,11 +39,12 @@ data class Frame(
     val paddingRight: Double = 0.0,
     val paddingTop: Double = 0.0,
     val paddingBottom: Double = 0.0,
+    val interactions: Array<Interaction> = emptyArray(),
     val effects: Array<Effect> = emptyArray(),
 ) : BaseComponent() {
     override fun <T> accept(
         visitor: Visitor<T>,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): T = visitor.visit(this, additionalData)
 
     override fun resolveComponents(): Array<BaseComponent> = components

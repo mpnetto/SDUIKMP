@@ -1,7 +1,6 @@
 package org.sacada.figma2sdui.data.nodes
 
 import kotlinx.serialization.Serializable
-import org.sacada.figma2sdui.data.AdditionalData
 import org.sacada.figma2sdui.data.Visitor
 import org.sacada.figma2sdui.data.nodes.enums.BlendMode
 import org.sacada.figma2sdui.data.nodes.enums.EasingType
@@ -24,7 +23,7 @@ data class Line(
     val transitionEasing: EasingType,
     val opacity: Int,
     val absoluteBoundingBox: Rectangle,
-    val absoluteRenderBounds: Rectangle,
+    val absoluteRenderBounds: Rectangle? = null,
     val effects: Array<Effect>,
     val size: Vector,
     val isMask: Boolean,
@@ -35,6 +34,6 @@ data class Line(
 ) : BaseComponent() {
     override fun <T> accept(
         visitor: Visitor<T>,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): T = visitor.visit(this, additionalData)
 }

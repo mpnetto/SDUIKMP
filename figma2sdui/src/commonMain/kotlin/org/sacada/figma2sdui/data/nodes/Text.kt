@@ -2,7 +2,6 @@ package org.sacada.figma2sdui.data.nodes
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.sacada.figma2sdui.data.AdditionalData
 import org.sacada.figma2sdui.data.Visitor
 import org.sacada.figma2sdui.data.nodes.enums.BlendMode
 import org.sacada.figma2sdui.data.nodes.enums.EasingType
@@ -29,7 +28,7 @@ data class Text(
     val transitionEasing: EasingType = EasingType.EASE_IN_AND_OUT,
     val opacity: Int = 100,
     val absoluteBoundingBox: Rectangle = Rectangle(0.0, 0.0, 0.0, 0.0),
-    val absoluteRenderBounds: Rectangle = Rectangle(0.0, 0.0, 0.0, 0.0),
+    val absoluteRenderBounds: Rectangle? = Rectangle(0.0, 0.0, 0.0, 0.0),
     val effects: Array<Effect> = emptyArray(),
     val size: Vector = Vector(0.0, 0.0),
     val isMask: Boolean = false,
@@ -47,6 +46,6 @@ data class Text(
 ) : BaseComponent() {
     override fun <T> accept(
         visitor: Visitor<T>,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): T = visitor.visit(this, additionalData)
 }

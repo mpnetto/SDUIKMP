@@ -2,7 +2,6 @@ package org.sacada.figma2sdui.data.nodes
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.sacada.figma2sdui.data.AdditionalData
 import org.sacada.figma2sdui.data.Visitor
 import org.sacada.figma2sdui.data.nodes.properties.Color
 import org.sacada.figma2sdui.data.nodes.properties.FlowStartingPoint
@@ -20,7 +19,7 @@ data class Page(
 ) : TreeNode() {
     override fun <T> accept(
         visitor: Visitor<T>,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): T = visitor.visit(this, additionalData)
 
     override fun equals(other: Any?): Boolean {

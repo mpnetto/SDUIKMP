@@ -163,8 +163,7 @@ private fun createTitleComposable(barTitle: String): @Composable () -> Unit =
 private fun createNavigationIconComposable(component: ViewComponent): @Composable () -> Unit =
     {
         component.children.find { it.type == "navigationIcon" }?.let {
-            org.sacada.data.ui.components.box.BoxRenderer
-                .Render(it)
+            BoxRenderer.Render(it)
         }
     }
 

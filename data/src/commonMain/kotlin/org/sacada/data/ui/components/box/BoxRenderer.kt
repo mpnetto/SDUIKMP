@@ -1,5 +1,6 @@
 package org.sacada.data.ui.components.box
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -12,9 +13,11 @@ import androidx.compose.ui.unit.dp
 import org.sacada.annotation.RegisterComponent
 import org.sacada.core.model.ViewComponent
 import org.sacada.core.util.getStringAttribute
+import org.sacada.data.navigation.LocalNavigator
 import org.sacada.data.ui.components.Component
 import org.sacada.data.ui.components.RenderComponent
 import org.sacada.data.util.getPadding
+import org.sacada.data.util.performAction
 
 @RegisterComponent
 object BoxRenderer : Component.Renderer {
@@ -23,8 +26,9 @@ object BoxRenderer : Component.Renderer {
         component: ViewComponent,
         modifier: Modifier?,
     ) {
-        val padding = remember { component.getPadding() }
+        val navController = LocalNavigator.current
 
+        val padding = remember { component.getPadding() }
         val height = component.getStringAttribute("height").toFloatOrNull()?.dp ?: 0.dp
         val width = component.getStringAttribute("width").toFloatOrNull()?.dp ?: 0.dp
 
@@ -34,7 +38,10 @@ object BoxRenderer : Component.Renderer {
                 Modifier
                     .width(width)
                     .height(height)
-                    .padding(padding),
+                    .padding(padding)
+                    .clickable {
+                        component.performAction(navController)
+                    },
         ) {
             component.children.forEach { child ->
                 RenderComponent(child)

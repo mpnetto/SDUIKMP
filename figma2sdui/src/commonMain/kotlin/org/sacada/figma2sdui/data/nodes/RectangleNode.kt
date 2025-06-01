@@ -2,7 +2,6 @@ package org.sacada.figma2sdui.data.nodes
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.sacada.figma2sdui.data.AdditionalData
 import org.sacada.figma2sdui.data.Visitor
 import org.sacada.figma2sdui.data.nodes.enums.BlendMode
 import org.sacada.figma2sdui.data.nodes.enums.EasingType
@@ -39,6 +38,6 @@ data class RectangleNode(
 ) : BaseComponent() {
     override fun <T> accept(
         visitor: Visitor<T>,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): T = visitor.visit(this, additionalData)
 }

@@ -55,7 +55,7 @@ class AnalyserVisitor : Visitor<AnalyserResult> {
 
     override fun visit(
         rootDocument: RootDocument,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): AnalyserResult {
         this.componentDescriptions = rootDocument.componentDescriptions
         rootDocument.document.accept(this, null)
@@ -68,7 +68,7 @@ class AnalyserVisitor : Visitor<AnalyserResult> {
 
     override fun visit(
         document: Document,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): AnalyserResult {
         document.pages.forEach { page ->
             page.accept(this, null)
@@ -79,7 +79,7 @@ class AnalyserVisitor : Visitor<AnalyserResult> {
 
     override fun visit(
         page: Page,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): AnalyserResult {
         page.frames.forEach { frame ->
             frame.accept(this, AdditionalData(page, page.type))
@@ -90,14 +90,14 @@ class AnalyserVisitor : Visitor<AnalyserResult> {
 
     override fun visit(
         rectangleNode: RectangleNode,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): AnalyserResult = AnalyserResult()
 
     override fun visit(
         frame: Frame,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): AnalyserResult {
-        if (additionalData != null && additionalData.parentType == NodeType.CANVAS) {
+        if (additionalData is AdditionalData && additionalData.parentType == NodeType.CANVAS) {
             frame.componentType = ComponentType.SCREEN_FRAME
         } else {
             val componentType = ComponentType.findTaggedComponentType(frame.name)
@@ -127,7 +127,7 @@ class AnalyserVisitor : Visitor<AnalyserResult> {
 
     override fun visit(
         instance: Instance,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): AnalyserResult {
         val componentType = ComponentType.findTaggedComponentType(instance.name)
         if (tagIsUnknown(componentType, instance.name)) {
@@ -159,7 +159,7 @@ class AnalyserVisitor : Visitor<AnalyserResult> {
 
     override fun visit(
         component: Component,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): AnalyserResult {
         val componentType = ComponentType.findTaggedComponentType(component.name)
         if (tagIsUnknown(componentType, component.name)) {
@@ -186,22 +186,22 @@ class AnalyserVisitor : Visitor<AnalyserResult> {
 
     override fun visit(
         vector: Vector,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): AnalyserResult = AnalyserResult()
 
     override fun visit(
         booleanOperation: BooleanOperation,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): AnalyserResult = AnalyserResult()
 
     override fun visit(
         line: Line,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): AnalyserResult = AnalyserResult()
 
     override fun visit(
         text: Text,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): AnalyserResult {
         text.componentType = ComponentType.TEXT
         return AnalyserResult(text.componentType)

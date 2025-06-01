@@ -8,6 +8,7 @@ import kotlinx.serialization.json.JsonPrimitive
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.sacada.annotation.RegisterComponent
 import org.sacada.core.model.ViewComponent
+import org.sacada.data.navigation.LocalNavigator
 import org.sacada.data.ui.components.Component
 import org.sacada.data.ui.components.RenderComponent
 import org.sacada.data.util.performAction
@@ -19,7 +20,11 @@ object ButtonRenderer : Component.Renderer {
         component: ViewComponent,
         modifier: Modifier?,
     ) {
-        Button(onClick = { component.performAction() }) {
+        val navController = LocalNavigator.current
+
+        Button(onClick = {
+            component.performAction(navController)
+        }) {
             component.children.forEach { child ->
                 RenderComponent(child)
             }

@@ -6,7 +6,6 @@ import kotlinx.serialization.json.buildJsonArray
 import kotlinx.serialization.json.buildJsonObject
 import org.sacada.data.ui.components.ComponentRegistry
 import org.sacada.figma2sdui.analyser.ComponentType
-import org.sacada.figma2sdui.data.AdditionalData
 import org.sacada.figma2sdui.data.Visitor
 import org.sacada.figma2sdui.data.nodes.BooleanOperation
 import org.sacada.figma2sdui.data.nodes.Component
@@ -27,11 +26,11 @@ class JsonBuilderVisitor : Visitor<JsonObject> {
 
     override fun visit(
         rootDocument: RootDocument,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): JsonObject {
         this.componentDescriptions = rootDocument.componentDescriptions
 
-        rootDocument.document.accept(this, null)
+        rootDocument.document.accept(this)
 
         return buildJsonObject {
             put(
@@ -47,10 +46,10 @@ class JsonBuilderVisitor : Visitor<JsonObject> {
 
     override fun visit(
         document: Document,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): JsonObject {
         document.pages.forEach { page ->
-            page.accept(this, null)
+            page.accept(this)
         }
 
         return buildJsonObject {}
@@ -58,10 +57,10 @@ class JsonBuilderVisitor : Visitor<JsonObject> {
 
     override fun visit(
         page: Page,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): JsonObject {
         page.frames.forEach { frame ->
-            val frameJson = frame.accept(this, null)
+            val frameJson = frame.accept(this)
             if (!frameJson.isEmpty()) {
                 screens.add(frameJson)
             }
@@ -71,12 +70,12 @@ class JsonBuilderVisitor : Visitor<JsonObject> {
 
     override fun visit(
         rectangleNode: RectangleNode,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): JsonObject = buildJsonObject {}
 
     override fun visit(
         frame: Frame,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): JsonObject {
         if (frame.componentType == ComponentType.SCREEN_FRAME) {
             return buildJsonObject {
@@ -222,7 +221,7 @@ class JsonBuilderVisitor : Visitor<JsonObject> {
 
     override fun visit(
         instance: Instance,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): JsonObject {
         val generator = instance.componentType.name.let { ComponentRegistry.getGenerator(it) }
 
@@ -247,27 +246,27 @@ class JsonBuilderVisitor : Visitor<JsonObject> {
 
     override fun visit(
         component: Component,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): JsonObject = buildJsonObject {}
 
     override fun visit(
         vector: Vector,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): JsonObject = buildJsonObject {}
 
     override fun visit(
         booleanOperation: BooleanOperation,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): JsonObject = buildJsonObject {}
 
     override fun visit(
         line: Line,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): JsonObject = buildJsonObject {}
 
     override fun visit(
         text: Text,
-        additionalData: AdditionalData?,
+        additionalData: Any?,
     ): JsonObject =
         buildJsonObject {
             put("id", JsonPrimitive(text.id))

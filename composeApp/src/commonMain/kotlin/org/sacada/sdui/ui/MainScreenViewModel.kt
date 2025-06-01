@@ -25,6 +25,9 @@ class MainScreenViewModel(
     private val _currentScreenIndex = mutableIntStateOf(0)
     val currentScreenIndex: State<Int> = _currentScreenIndex
 
+    private val _initialScreenId = mutableStateOf<String?>(null)
+    val initialScreenId: State<String?> = _initialScreenId
+
     private var isFetching = false
 
 //    private val screenDao = (application as CustomApplication).database.screenDao()
@@ -56,6 +59,11 @@ class MainScreenViewModel(
                     if (showLoading) _isLoading.value = false
                     if (result != null) {
                         _rootComponent.value = JsonParser.parseScreens(result.toString())
+                        _initialScreenId.value =
+                            _rootComponent.value
+                                ?.screens
+                                ?.firstOrNull()
+                                ?.id
 //                        viewModelScope.launch {
 //                            screenDao.insert(ScreenEntity(jsonData = result.toString()))
 //                        }

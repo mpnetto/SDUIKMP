@@ -12,6 +12,8 @@ import org.sacada.data.ui.components.RenderComponent
 // import org.sacada.data.ui.screen.LocalScreenViewModel
 import kotlinx.serialization.json.JsonPrimitive
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.sacada.data.navigation.LocalNavigator
+import org.sacada.data.util.performAction
 
 @RegisterComponent
 object FloatingActionButtonRenderer : Component.Renderer {
@@ -20,6 +22,7 @@ object FloatingActionButtonRenderer : Component.Renderer {
         component: ViewComponent,
         modifier: Modifier?,
     ) {
+        val navController = LocalNavigator.current
 //        val viewModel = LocalScreenViewModel.current
 //        val allComponentsValid by viewModel.areAllComponentsValid.collectAsState()
 
@@ -29,7 +32,7 @@ object FloatingActionButtonRenderer : Component.Renderer {
         FloatingActionButton(
             onClick = {
 //                if (allComponentsValid) {
-//                    component.action?.let { handleAction(it) }
+                component.performAction(navController)
 //                }
             },
             containerColor = MaterialTheme.colorScheme.primary,
