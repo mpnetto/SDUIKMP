@@ -51,26 +51,26 @@ class MainScreenViewModel(
 //                if (savedScreen != null) {
 //                    _rootComponent.value = JsonParser.parseScreens(savedScreen.jsonData)
 //                }
-                convertFigmaData(
-                    apiKey = "figd_xjEUEhJs8g0pBeToo8tGr9HqEYbIniWSSyXcleIh",
-                    fileKey = "AoKFU3cc2C8hr74wq6lDca",
-                ) { result ->
-                    isFetching = false
-                    if (showLoading) _isLoading.value = false
-                    if (result != null) {
-                        _rootComponent.value = JsonParser.parseScreens(result.toString())
-                        _initialScreenId.value =
-                            _rootComponent.value
-                                ?.screens
-                                ?.firstOrNull()
-                                ?.id
+                val result =
+                    convertFigmaData(
+                        apiKey = "figd_xjEUEhJs8g0pBeToo8tGr9HqEYbIniWSSyXcleIh",
+                        fileKey = "AoKFU3cc2C8hr74wq6lDca",
+                    )
+                isFetching = false
+                if (showLoading) _isLoading.value = false
+                if (result != null) {
+                    _rootComponent.value = JsonParser.parseScreens(result.toString())
+                    _initialScreenId.value =
+                        _rootComponent.value
+                            ?.screens
+                            ?.firstOrNull()
+                            ?.id
 //                        viewModelScope.launch {
 //                            screenDao.insert(ScreenEntity(jsonData = result.toString()))
 //                        }
 //                        _updateKey.intValue++
-                    } else {
-                        println("Error converting the Figma file.")
-                    }
+                } else {
+                    println("Error converting the Figma file.")
                 }
             } finally {
                 onComplete?.invoke()

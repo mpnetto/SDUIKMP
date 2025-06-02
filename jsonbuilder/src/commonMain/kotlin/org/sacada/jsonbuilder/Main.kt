@@ -4,16 +4,15 @@ import kotlinx.serialization.json.JsonObject
 import org.sacada.figma2sdui.fetchFigmaData
 import org.sacada.jsonbuilder.converter.FigmaJsonConverter
 
-fun convertFigmaData(
+suspend fun convertFigmaData(
     apiKey: String,
     fileKey: String,
-    onResult: (JsonObject?) -> Unit,
-) {
-    fetchFigmaData(apiKey, fileKey) { rootDocument ->
+): JsonObject? {
+    val rootDocument =
+        fetchFigmaData(apiKey, fileKey)
+
+    return rootDocument?.let {
         val converter = FigmaJsonConverter()
-
-        val converted = rootDocument?.let { converter.convert(it) }
-
-        onResult(converted)
+        converter.convert(it)
     }
 }
