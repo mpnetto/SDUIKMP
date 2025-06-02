@@ -13,6 +13,9 @@ import org.sacada.jsonbuilder.convertFigmaData
 class MainScreenViewModel(
 //    application: Application
 ) : ViewModel() {
+    private val _errorMessage = mutableStateOf<String?>(null)
+    val errorMessage: State<String?> = _errorMessage
+
     private val _rootComponent = mutableStateOf<ViewScreens?>(null)
     val rootComponent: State<ViewScreens?> = _rootComponent
 
@@ -56,8 +59,7 @@ class MainScreenViewModel(
                         apiKey = "figd_xjEUEhJs8g0pBeToo8tGr9HqEYbIniWSSyXcleIh",
                         fileKey = "AoKFU3cc2C8hr74wq6lDca",
                     )
-                isFetching = false
-                if (showLoading) _isLoading.value = false
+
                 if (result != null) {
                     _rootComponent.value = JsonParser.parseScreens(result.toString())
                     _initialScreenId.value =
@@ -70,9 +72,16 @@ class MainScreenViewModel(
 //                        }
 //                        _updateKey.intValue++
                 } else {
-                    println("Error converting the Figma file.")
+                    _errorMessage.value =
+                        "Failed to load layout. Please check your connection or try again later." // Define mensagem de erro
                 }
+            } catch (e: Exception) {
+                println("Exception during data fetch: ${e.message}")
+                _errorMessage.value =
+                    "An error occurred: ${e.message ?: "Unknown error"}" // English error message
             } finally {
+                isFetching = false
+                if (showLoading) _isLoading.value = false
                 onComplete?.invoke()
             }
         }

@@ -1,5 +1,6 @@
 package org.sacada.sdui.ui
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
@@ -36,6 +38,7 @@ import org.sacada.data.ui.screen.RenderScreen
 
 const val LOADING_SCREEN_ROUTE = "loading"
 const val SCREEN_ROUTE_PATTERN = "screen/{screenId}"
+const val ERROR_SCREEN_ROUTE = "error"
 
 @Composable
 fun MainScreen() {
@@ -45,12 +48,15 @@ fun MainScreen() {
         val initialScreenId = viewModel.initialScreenId.value
         val rootComponent by viewModel.rootComponent
         val isLoading by viewModel.isLoading
+        val errorMessage by viewModel.errorMessage
 
         MainScreenUI(
             rootComponent = rootComponent,
             initialScreenId = initialScreenId,
             isLoading = isLoading,
+            errorMessage = errorMessage,
             onNavigateToScreen = { index -> viewModel.goToScreen(index) },
+            onRetry = { viewModel.fetchData(showLoading = true) },
         )
     }
 }
@@ -60,7 +66,9 @@ fun MainScreenUI(
     rootComponent: ViewScreens?,
     initialScreenId: String?,
     isLoading: Boolean,
+    errorMessage: String?,
     onNavigateToScreen: (Int) -> Unit,
+    onRetry: () -> Unit,
 ) {
     val navController = rememberNavController()
 
@@ -112,7 +120,12 @@ fun MainScreenUI(
             Box(modifier = Modifier.fillMaxSize()) {
                 NavHost(
                     navController = navController,
-                    startDestination = if (initialScreenId != null) "screen/$initialScreenId" else LOADING_SCREEN_ROUTE,
+                    startDestination =
+                        when {
+                            errorMessage != null -> ERROR_SCREEN_ROUTE
+                            initialScreenId != null -> "screen/$initialScreenId"
+                            else -> LOADING_SCREEN_ROUTE
+                        },
                 ) {
                     composable(route = LOADING_SCREEN_ROUTE) {
                         Box(
@@ -120,6 +133,25 @@ fun MainScreenUI(
                             contentAlignment = Alignment.Center,
                         ) {
                             CircularProgressIndicator()
+                        }
+                    }
+                    composable(route = ERROR_SCREEN_ROUTE) {
+                        Column(
+                            modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .padding(16.dp),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            Text(
+                                text = errorMessage ?: "An unknown error occurred.", // Fallback in English
+                                style = MaterialTheme.typography.bodyLarge,
+                                modifier = Modifier.padding(bottom = 16.dp),
+                            )
+                            Button(onClick = onRetry) {
+                                Text("Try Again") // Changed to English
+                            }
                         }
                     }
                     composable(
@@ -140,6 +172,14 @@ fun MainScreenUI(
                                 RenderScreen(viewScreen)
                             }
                         }
+                    }
+                }
+                if (isLoading && navController.currentDestination?.route != LOADING_SCREEN_ROUTE) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator()
                     }
                 }
             }
