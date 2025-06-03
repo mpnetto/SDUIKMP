@@ -18,7 +18,6 @@ import org.sacada.data.ui.components.topBar.TopBarRenderer
 
 @Composable
 fun RenderScreen(screen: ViewScreen) {
-//    CompositionLocalProvider(LocalScreenViewModel provides viewModel) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {

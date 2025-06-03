@@ -119,7 +119,6 @@ fun ViewComponent.performAction(navController: NavController) {
     when (action?.type) {
         "NAVIGATE" -> action?.destination?.let { navController.navigate("screen/$it") }
         "BACK" -> navController.popBackStack()
-//        "event" -> triggerEvent(action?.destination)
     }
 }
 

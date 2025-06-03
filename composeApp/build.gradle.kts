@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -38,7 +39,6 @@ kotlin {
             implementation(projects.core)
             implementation(projects.data)
             implementation(projects.jsonbuilder)
-            implementation(projects.shared)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -75,6 +75,19 @@ android {
                 .toInt()
         versionCode = 1
         versionName = "1.0"
+
+        val apiKey =
+            project.loadLocalProperty(
+                path = "local.properties",
+                propertyName = "FIGMA_API_KEY",
+            )
+        val apiSecret =
+            project.loadLocalProperty(
+                path = "local.properties",
+                propertyName = "FIGMA_FILE_KEY",
+            )
+        buildConfigField("String", "FIGMA_API_KEY", apiKey)
+        buildConfigField("String", "FIGMA_FILE_KEY", apiSecret)
     }
     packaging {
         resources {
@@ -90,8 +103,25 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
     debugImplementation(compose.uiTooling)
+}
+
+fun Project.loadLocalProperty(
+    path: String,
+    propertyName: String,
+): String {
+    val localProperties = Properties()
+    val localPropertiesFile = project.rootProject.file(path)
+    if (localPropertiesFile.exists()) {
+        localProperties.load(localPropertiesFile.inputStream())
+        return localProperties.getProperty(propertyName)
+    } else {
+        throw GradleException("can not find property : $propertyName")
+    }
 }

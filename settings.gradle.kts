@@ -29,8 +29,6 @@ dependencyResolutionManagement {
 }
 
 include(":composeApp")
-include(":server")
-include(":shared")
 include(":data")
 include(":figma2sdui")
 include(":jsonbuilder")
