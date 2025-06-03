@@ -22,6 +22,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -30,6 +31,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import kotlinx.coroutines.launch
 import org.koin.compose.KoinContext
 import org.koin.compose.viewmodel.koinViewModel
 import org.sacada.core.model.ViewScreens
@@ -45,7 +47,7 @@ fun MainScreen() {
     KoinContext {
         val viewModel = koinViewModel<MainScreenViewModel>()
 
-        val initialScreenId = viewModel.initialScreenId.value
+        val initialScreenId = viewModel.currentScreenId.value
         val rootComponent by viewModel.rootComponent
         val isLoading by viewModel.isLoading
         val errorMessage by viewModel.errorMessage
@@ -71,6 +73,7 @@ fun MainScreenUI(
     onRetry: () -> Unit,
 ) {
     val navController = rememberNavController()
+    val scope = rememberCoroutineScope()
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
@@ -104,10 +107,11 @@ fun MainScreenUI(
                                 label = { screen.name?.let { Text(it) } },
                                 selected = false,
                                 onClick = {
-//                                    viewModel.goToScreen(index)
-//                                    coroutineScope.launch {
-//                                        drawerState.close()
-//                                    }
+                                    onNavigateToScreen(index)
+
+                                    scope.launch {
+                                        drawerState.close()
+                                    }
                                 },
                             )
                         }
@@ -145,12 +149,14 @@ fun MainScreenUI(
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Text(
-                                text = errorMessage ?: "An unknown error occurred.", // Fallback in English
+                                text =
+                                    errorMessage
+                                        ?: "An unknown error occurred.",
                                 style = MaterialTheme.typography.bodyLarge,
                                 modifier = Modifier.padding(bottom = 16.dp),
                             )
                             Button(onClick = onRetry) {
-                                Text("Try Again") // Changed to English
+                                Text("Try Again")
                             }
                         }
                     }
