@@ -10,7 +10,9 @@ import org.sacada.annotation.RegisterComponent
 import org.sacada.core.model.ViewComponent
 import org.sacada.core.util.getStringAttribute
 import org.sacada.data.ui.components.Component
+import org.sacada.data.navigation.LocalNavigator
 import org.sacada.data.util.getIconResource
+import org.sacada.data.util.performAction
 
 @RegisterComponent
 object IconButtonRenderer : Component.Renderer {
@@ -19,11 +21,15 @@ object IconButtonRenderer : Component.Renderer {
         component: ViewComponent,
         modifier: Modifier?,
     ) {
+        val navController = LocalNavigator.current
+
         val iconName = component.getStringAttribute("iconName")
         val contentDescription = component.getStringAttribute("contentDescription")
 
         if (iconName.isNotEmpty()) {
-            IconButton(onClick = {}) {
+            IconButton(onClick = {
+                component.performAction(navController)
+            }) {
                 Icon(
                     imageVector = getIconResource(iconName),
                     contentDescription = contentDescription,
