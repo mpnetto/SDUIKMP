@@ -196,17 +196,11 @@ git clone https://github.com/your-repo/server-driven-ui.git
 cd server-driven-ui
 ```
 
-2️⃣ **Add your Figma API Key**  
-Edit `MainScreenViewModel.kt`:
+2️⃣ **Configure your Figma API keys**
 
-```kotlin
-convertFigmaData(
-    apiKey = "YOUR_FIGMA_API_KEY",
-    fileKey = "YOUR_FIGMA_FILE_KEY"
-) { result ->
-    // Process Figma data
-}
-```
+The project retrieves keys from `AppConfigProvider` through build configuration. Add `FIGMA_API_KEY` and `FIGMA_FILE_KEY` to `local.properties`.
+- Android reads these via `AppConfigProvider.android.kt`.
+- Other targets should update `AppConfigProvider.native.kt`.
 
 3️⃣ **Run the project**
 ```bash
