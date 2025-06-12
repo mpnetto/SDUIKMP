@@ -221,3 +221,25 @@ The project retrieves keys from `AppConfigProvider` through build configuration.
 🔹 **Performance Tuning:** Optimize JSON parsing and rendering efficiency.  
 
 ---
+## 🍎 Running the iOS App
+
+The project also ships with an **iOS target**. Open the Xcode project and run it just like any regular iOS app:
+
+```bash
+open iosApp/iosApp.xcodeproj
+```
+
+> The iOS module shares the same Kotlin code through Kotlin Multiplatform.
+
+## 📚 Additional READMEs
+
+Each major module contains its own README with more details:
+
+- [composeApp](composeApp/readme.md) – main application and dependency injection
+- [core](core/readme.md) – fundamental models and JSON parsing utilities
+- [data](data/readme.md) – component rendering and state management
+- [jsonbuilder](jsonbuilder/readme.md) – converts Figma designs into SDUI JSON
+- [figma2sdui](figma2sdui/readme.md) – fetches and prepares data from Figma
+
+---
+

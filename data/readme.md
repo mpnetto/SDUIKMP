@@ -1,7 +1,7 @@
 # 🏹 Server-Driven UI - Data Module
 
 The **data module** is responsible for **component rendering and generation**, **UI logic**, **state management**, and **utility functions** in the Server-Driven UI architecture. It processes JSON structures and dynamically renders components using **Jetpack Compose**.
-
+For an overview of all modules see the [project README](../README.md).
 ## 📌 Technologies Used
 
 - **Kotlin**

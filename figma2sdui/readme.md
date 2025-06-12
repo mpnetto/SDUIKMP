@@ -1,7 +1,7 @@
 # 🏹 Server-Driven UI - Figma2SDUI Module
 
 The **Figma2SDUI module** is responsible for **fetching, parsing, analyzing, and converting Figma data** into a structured format for **Server-Driven UI**. This module integrates with the **Figma API**, processes component structures, and outputs data ready for use in UI generation.
-
+For an overview of all modules see the [project README](../README.md).
 ## 📌 Technologies Used
 
 - **Kotlin**

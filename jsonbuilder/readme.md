@@ -1,7 +1,7 @@
 # 🏹 Server-Driven UI - JsonBuilder Module
 
 The **JsonBuilder module** is responsible for **converting Figma designs into JSON structures** for Server-Driven UI. It processes **Figma API data**, parses component structures, and generates JSON representations that can be used in the UI.
-
+For an overview of all modules see the [project README](../README.md).
 ## 📌 Technologies Used
 
 - **Kotlin**

@@ -1,7 +1,7 @@
 # 🏹 Server-Driven UI - Core Module
 
 This module is the foundation of the **Server-Driven UI**, responsible for **JSON parsing**, **defining UI components**, **handling navigation actions**, and **screen structure**. It provides the essential classes for dynamically building the user interface.
-
+For an overview of all modules see the [project README](../README.md).
 ## 📌 Technologies Used
 
 - **Kotlin**
