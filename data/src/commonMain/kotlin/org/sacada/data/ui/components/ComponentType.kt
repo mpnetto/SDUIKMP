@@ -29,6 +29,8 @@ sealed class ComponentType(
 
     data object TopBar : ComponentType("TopBar")
 
+    data object Switch : ComponentType("Switch")
+
     companion object {
         fun fromType(value: String): ComponentType =
             when (value) {
@@ -45,6 +47,7 @@ sealed class ComponentType(
                 "TEXT", "Text" -> Text
                 "TEXT_FIELD", "TextField" -> TextField
                 "TOP_BAR", "TopBar" -> TopBar
+                "SWITCH", "Switch" -> Switch
                 else -> error("Unknown ComponentType: $value")
             }
     }
