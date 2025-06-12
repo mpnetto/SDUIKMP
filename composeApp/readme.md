@@ -1,6 +1,7 @@
 # 🏹 Server-Driven UI - Main Application
 
 The **Main Application Module** is responsible for initializing the app, managing dependency injection with **Koin**, and rendering the dynamically generated UI using **Jetpack Compose**. It integrates with the **Server-Driven UI architecture**, fetching and displaying Figma-generated screens.
+For an overview of all modules see the [project README](../README.md).
 
 ## 📌 Technologies Used
 
