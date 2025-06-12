@@ -172,9 +172,9 @@ A **Figma design** converted into JSON.
 ✅ **Figma API Integration**  
 ✅ **JSON Parsing & Component Analysis**  
 ✅ **Server-Driven UI Rendering**  
-✅ **Gesture Navigation & Transitions**  
-🔜 **Performance Optimizations**  
-🔜 **Support for Additional Components**  
+✅ **Gesture Navigation & Transitions**
+🔜 **Performance Optimizations**
+✅ **Support for Additional Components (e.g., Switch)**
 
 ---
 
