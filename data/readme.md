@@ -69,7 +69,10 @@ object ComponentRegistry {
         ComponentType.Icon -> IconRenderer
         ComponentType.IconButton -> IconButtonRenderer
         ComponentType.Image -> ImageRenderer
+        ComponentType.List -> ListRenderer
+        ComponentType.ListItem -> ListItemRenderer
         ComponentType.Row -> RowRenderer
+        ComponentType.Switch -> SwitchRenderer
         ComponentType.Text -> TextRenderer
         ComponentType.TextField -> TextFieldRenderer
         ComponentType.TopBar -> TopBarRenderer

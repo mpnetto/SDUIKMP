@@ -21,7 +21,13 @@ sealed class ComponentType(
 
     data object Image : ComponentType("Image")
 
+    data object List : ComponentType("List")
+
+    data object ListItem : ComponentType("ListItem")
+
     data object Row : ComponentType("Row")
+
+    data object Switch : ComponentType("Switch")
 
     data object Text : ComponentType("Text")
 
@@ -41,7 +47,10 @@ sealed class ComponentType(
                 "Icon" -> Icon
                 "IconButton" -> IconButton
                 "Image" -> Image
+                "List" -> List
+                "ListItem" -> ListItem
                 "ROW", "Row" -> Row
+                "Switch" -> Switch
                 "TEXT", "Text" -> Text
                 "TEXT_FIELD", "TextField" -> TextField
                 "TOP_BAR", "TopBar" -> TopBar
