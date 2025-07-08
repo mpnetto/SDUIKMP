@@ -4,5 +4,6 @@ enum class AxisSizingMode {
     FIXED,
     CENTER,
     AUTO,
-    SPACE_BETWEEN
+    SPACE_BETWEEN,
+    MAX,
 }

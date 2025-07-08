@@ -21,7 +21,13 @@ sealed class ComponentType(
 
     data object Image : ComponentType("Image")
 
+    data object List : ComponentType("List")
+
+    data object ListItem : ComponentType("ListItem")
+
     data object Row : ComponentType("Row")
+
+    data object Switch : ComponentType("Switch")
 
     data object Text : ComponentType("Text")
 
@@ -31,20 +37,23 @@ sealed class ComponentType(
 
     companion object {
         fun fromType(value: String): ComponentType =
-            when (value) {
-                "BOX", "Box" -> Box
-                "BUTTON", "Button" -> Button
-                "BOTTOM_BAR", "BottomBar" -> BottomBar
-                "CHECKBOX", "Checkbox" -> Checkbox
-                "COLUMN", "Column" -> Column
-                "FloatingActionButton" -> FloatingActionButton
-                "Icon" -> Icon
-                "IconButton" -> IconButton
-                "Image" -> Image
-                "ROW", "Row" -> Row
-                "TEXT", "Text" -> Text
-                "TEXT_FIELD", "TextField" -> TextField
-                "TOP_BAR", "TopBar" -> TopBar
+            when (value.lowercase()) {
+                "box" -> Box
+                "Button" -> Button
+                "bottom_bar", "bottombar" -> BottomBar
+                "checkbox" -> Checkbox
+                "column" -> Column
+                "floatingactionbutton" -> FloatingActionButton
+                "icon" -> Icon
+                "iconbutton" -> IconButton
+                "image" -> Image
+                "list" -> List
+                "listitem" -> ListItem
+                "row" -> Row
+                "switch" -> Switch
+                "text" -> Text
+                "text_field", "textfield" -> TextField
+                "top_bar", "topbar" -> TopBar
                 else -> error("Unknown ComponentType: $value")
             }
     }

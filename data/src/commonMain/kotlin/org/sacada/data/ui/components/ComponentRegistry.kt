@@ -18,8 +18,14 @@ import org.sacada.data.ui.components.iconButton.IconButtonGenerator
 import org.sacada.data.ui.components.iconButton.IconButtonRenderer
 import org.sacada.data.ui.components.image.ImageGenerator
 import org.sacada.data.ui.components.image.ImageRenderer
+import org.sacada.data.ui.components.list.ListGenerator
+import org.sacada.data.ui.components.list.ListRenderer
+import org.sacada.data.ui.components.listItem.ListItemGenerator
+import org.sacada.data.ui.components.listItem.ListItemRenderer
 import org.sacada.data.ui.components.row.RowGenerator
 import org.sacada.data.ui.components.row.RowRenderer
+import org.sacada.data.ui.components.switch.SwitchGenerator
+import org.sacada.data.ui.components.switch.SwitchRenderer
 import org.sacada.data.ui.components.text.TextGenerator
 import org.sacada.data.ui.components.text.TextRenderer
 import org.sacada.data.ui.components.textField.TextFieldGenerator
@@ -39,7 +45,10 @@ object ComponentRegistry {
             ComponentType.Icon -> IconRenderer
             ComponentType.IconButton -> IconButtonRenderer
             ComponentType.Image -> ImageRenderer
+            ComponentType.List -> ListRenderer
+            ComponentType.ListItem -> ListItemRenderer
             ComponentType.Row -> RowRenderer
+            ComponentType.Switch -> SwitchRenderer
             ComponentType.Text -> TextRenderer
             ComponentType.TextField -> TextFieldRenderer
             ComponentType.TopBar -> TopBarRenderer
@@ -56,7 +65,10 @@ object ComponentRegistry {
             ComponentType.Icon -> IconGenerator
             ComponentType.IconButton -> IconButtonGenerator
             ComponentType.Image -> ImageGenerator
+            ComponentType.List -> ListGenerator
+            ComponentType.ListItem -> ListItemGenerator
             ComponentType.Row -> RowGenerator
+            ComponentType.Switch -> SwitchGenerator
             ComponentType.Text -> TextGenerator
             ComponentType.TextField -> TextFieldGenerator
             ComponentType.TopBar -> TopBarGenerator

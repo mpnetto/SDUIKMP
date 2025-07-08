@@ -10,29 +10,31 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-class ServiceCreator(baseUrl: String) {
-
-    private val httpClient = HttpClient {
-        install(ContentNegotiation) {
-            json(
-                Json {
-                    isLenient = true
-                    ignoreUnknownKeys = true
-                }
-            )
+class ServiceCreator(
+    baseUrl: String,
+) {
+    private val httpClient =
+        HttpClient {
+            install(ContentNegotiation) {
+                json(
+                    Json {
+                        isLenient = true
+                        ignoreUnknownKeys = true
+                    },
+                )
+            }
+            install(Logging) {
+                logger = Logger.DEFAULT
+                level = LogLevel.BODY
+            }
         }
-        install(Logging) {
-            logger = Logger.DEFAULT
-            level = LogLevel.BODY
-        }
-    }
 
-    private val ktorfit = Ktorfit.Builder()
-        .baseUrl(baseUrl)
-        .httpClient(httpClient)
-        .build()
+    private val ktorfit =
+        Ktorfit
+            .Builder()
+            .baseUrl(baseUrl)
+            .httpClient(httpClient)
+            .build()
 
-    fun createAPIClient(): APIClient {
-        return ktorfit.create()
-    }
+    fun createAPIClient(): APIClient = ktorfit.createAPIClient()
 }
