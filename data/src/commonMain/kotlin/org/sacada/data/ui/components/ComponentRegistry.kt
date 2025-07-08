@@ -24,6 +24,8 @@ import org.sacada.data.ui.components.text.TextGenerator
 import org.sacada.data.ui.components.text.TextRenderer
 import org.sacada.data.ui.components.textField.TextFieldGenerator
 import org.sacada.data.ui.components.textField.TextFieldRenderer
+import org.sacada.data.ui.components.switch.SwitchGenerator
+import org.sacada.data.ui.components.switch.SwitchRenderer
 import org.sacada.data.ui.components.topBar.TopBarGenerator
 import org.sacada.data.ui.components.topBar.TopBarRenderer
 
@@ -43,6 +45,7 @@ object ComponentRegistry {
             ComponentType.Text -> TextRenderer
             ComponentType.TextField -> TextFieldRenderer
             ComponentType.TopBar -> TopBarRenderer
+            ComponentType.Switch -> SwitchRenderer
         }
 
     fun getGenerator(type: String): Generator =
@@ -60,5 +63,6 @@ object ComponentRegistry {
             ComponentType.Text -> TextGenerator
             ComponentType.TextField -> TextFieldGenerator
             ComponentType.TopBar -> TopBarGenerator
+            ComponentType.Switch -> SwitchGenerator
         }
 }
