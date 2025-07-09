@@ -31,19 +31,20 @@ class AnalyserVisitor : Visitor<AnalyserResult> {
         parentType: ComponentType,
         childrenTypes: List<ComponentType>,
     ): Boolean {
-        val isValid = when (parentType) {
-            ComponentType.LIST ->
-                childrenTypes.all { it == ComponentType.LIST_ITEM }
+        val isValid =
+            when (parentType) {
+                ComponentType.LIST ->
+                    childrenTypes.all { it == ComponentType.LIST_ITEM }
 
-            ComponentType.ROW, ComponentType.COLUMN ->
-                childrenTypes.none {
-                    it == ComponentType.SCREEN_FRAME ||
-                        it == ComponentType.COMPONENT_FRAME ||
-                        it == ComponentType.UNKNOWN
-                }
+                ComponentType.ROW, ComponentType.COLUMN ->
+                    childrenTypes.none {
+                        it == ComponentType.SCREEN_FRAME ||
+                            it == ComponentType.COMPONENT_FRAME ||
+                            it == ComponentType.UNKNOWN
+                    }
 
-            else -> true
-        }
+                else -> true
+            }
 
         if (!isValid) {
             val errorString =
@@ -58,13 +59,6 @@ class AnalyserVisitor : Visitor<AnalyserResult> {
         if (!componentDescriptions.containsKey(instance.componentId)) {
             val errorString =
                 "Unknown Material3 component id ${instance.componentId} for ${instance.name}"
-            errorMessages.add(errorString)
-            return false
-        }
-
-        if (instance.components.any { it.componentType == ComponentType.UNKNOWN }) {
-            val errorString =
-                "Material3 component ${instance.name} contains unknown children"
             errorMessages.add(errorString)
             return false
         }
