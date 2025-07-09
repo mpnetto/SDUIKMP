@@ -31,12 +31,44 @@ class AnalyserVisitor : Visitor<AnalyserResult> {
         parentType: ComponentType,
         childrenTypes: List<ComponentType>,
     ): Boolean {
-        // TODO: check semantics for various types and their children
-        return true
+        val isValid = when (parentType) {
+            ComponentType.LIST ->
+                childrenTypes.all { it == ComponentType.LIST_ITEM }
+
+            ComponentType.ROW, ComponentType.COLUMN ->
+                childrenTypes.none {
+                    it == ComponentType.SCREEN_FRAME ||
+                        it == ComponentType.COMPONENT_FRAME ||
+                        it == ComponentType.UNKNOWN
+                }
+
+            else -> true
+        }
+
+        if (!isValid) {
+            val errorString =
+                "Invalid children $childrenTypes for parent ${parentType.name}"
+            errorMessages.add(errorString)
+        }
+
+        return isValid
     }
 
-    private fun checkM3Semantics(parentType: ComponentType): Boolean {
-        // TODO: check semantics for various M3 components
+    private fun checkM3Semantics(instance: Instance): Boolean {
+        if (!componentDescriptions.containsKey(instance.componentId)) {
+            val errorString =
+                "Unknown Material3 component id ${instance.componentId} for ${instance.name}"
+            errorMessages.add(errorString)
+            return false
+        }
+
+        if (instance.components.any { it.componentType == ComponentType.UNKNOWN }) {
+            val errorString =
+                "Material3 component ${instance.name} contains unknown children"
+            errorMessages.add(errorString)
+            return false
+        }
+
         return true
     }
 
@@ -141,8 +173,7 @@ class AnalyserVisitor : Visitor<AnalyserResult> {
         instance.componentType = componentType
         instance.name = sanitizeString(instance.name)
         if (instance.componentType.isM3Tag) {
-            checkM3Semantics(instance.componentType)
-            // return here probably
+            checkM3Semantics(instance)
         }
 
         val childrenAnalyserResults =
