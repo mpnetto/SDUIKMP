@@ -39,6 +39,7 @@ kotlin {
             implementation(projects.core)
             implementation(projects.data)
             implementation(projects.jsonbuilder)
+            implementation(projects.codegen)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -110,6 +111,28 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+}
+
+// Task to generate Compose code directly from Figma
+tasks.register("generateComposeCodeFromFigma") {
+    group = "codegen"
+    description = "Generate Compose code from Figma designs"
+    dependsOn(":codegen:desktopJar")
+
+    doLast {
+        val apiKey = loadLocalProperty("local.properties", "FIGMA_API_KEY")
+        val fileKey = loadLocalProperty("local.properties", "FIGMA_FILE_KEY")
+        val outputDir = projectDir.resolve("src/commonMain/kotlin/generated")
+        outputDir.mkdirs()
+
+        javaexec {
+            mainClass.set("org.sacada.codegen.CodegenMain")
+            val runtimeCp = project(":codegen").configurations.getByName("desktopRuntimeClasspath")
+            val jar = project(":codegen").tasks.getByName("desktopJar").outputs.files
+            classpath = runtimeCp + jar
+            args(apiKey, fileKey, outputDir.absolutePath)
+        }
+    }
 }
 
 fun Project.loadLocalProperty(
