@@ -1,11 +1,12 @@
 package org.sacada.sdui.config
 
-actual object AppConfigProvider {
-    actual fun getFigmaApiKey(): String {
-        TODO("Not yet implemented")
-    }
+import kotlinx.cinterop.toKString
+import platform.posix.getenv
 
-    actual fun getFigmaFileKey(): String {
-        TODO("Not yet implemented")
-    }
+actual object AppConfigProvider {
+    actual fun getFigmaApiKey(): String =
+        getenv("FIGMA_API_KEY")?.toKString() ?: ""
+
+    actual fun getFigmaFileKey(): String =
+        getenv("FIGMA_FILE_KEY")?.toKString() ?: ""
 }
