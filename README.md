@@ -200,7 +200,7 @@ cd server-driven-ui
 
 The project retrieves keys from `AppConfigProvider` through build configuration. Add `FIGMA_API_KEY` and `FIGMA_FILE_KEY` to `local.properties`.
 - Android reads these via `AppConfigProvider.android.kt`.
-- Other targets should update `AppConfigProvider.native.kt`.
+- Native targets obtain the values from environment variables through `AppConfigProvider.native.kt`.
 
 3️⃣ **Run the project**
 ```bash
