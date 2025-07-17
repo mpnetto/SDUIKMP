@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.ktorfit)
 }
 
 kotlin {
@@ -32,27 +31,10 @@ kotlin {
 
     sourceSets {
 
-        androidMain.dependencies {
-            implementation(libs.ktor.client.okhttp)
-        }
-
         commonMain.dependencies {
 
             implementation(libs.kotlinx.serialization.json)
-            implementation(kotlin("reflect"))
-
-            // Ktorfit
-            implementation(libs.ktorfit.lib)
-
-            // Ktor
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.content.negotiation)
-            implementation(libs.ktor.serialization.kotlinx.json)
-            implementation(libs.ktor.client.logging)
-        }
-
-        iosMain.dependencies {
-            implementation(libs.ktor.client.darwin)
+            implementation(project(":network"))
         }
     }
 }
