@@ -126,6 +126,9 @@ fun RenderScreen(screen: ViewScreen) {
 > generator runs, it parses this file and injects its structure directly into the generated Compose
 > functions. Any structural change made here (for example adding a `FloatingActionButton`) will
 > automatically appear in the generated screens without further modifications.
+> The same mechanism is applied to `TopBarRenderer.Render`, `BottomBarRenderer.Render`
+> and `RenderComponent`, ensuring any updates to these rendering functions are
+> reflected in the generated code.
 
 ---
 
