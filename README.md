@@ -96,6 +96,8 @@ fun MainScreen() {
     val viewModel = koinViewModel<MainScreenViewModel>()
     val rootComponent by viewModel.rootComponent
 
+    // RenderScreen is annotated with @ScreenTemplate and serves as the template
+    // for generated screens
     rootComponent?.screens?.getOrNull(0)?.let { RenderScreen(it) }
 }
 ```

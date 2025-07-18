@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import org.sacada.annotation.ScreenTemplate
 import org.sacada.core.model.ViewScreen
 import org.sacada.data.ui.components.RenderComponent
 import org.sacada.data.ui.components.bottomBar.BottomBarRenderer
@@ -16,6 +17,7 @@ import org.sacada.data.ui.components.topBar.TopBarRenderer
 //        error("ScreenViewModel not provided")
 //    }
 
+@ScreenTemplate
 @Composable
 fun RenderScreen(screen: ViewScreen) {
     Scaffold(

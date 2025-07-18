@@ -97,7 +97,9 @@ class ScreenViewModel : ViewModel() {
 ```
 
 ### `RenderScreen.kt`
-Handles **screen rendering**, integrating **TopBar, BottomBar**, and the main layout dynamically.
+Handles **screen rendering**, integrating **TopBar, BottomBar**, and the main layout dynamically. The function is annotated with `@ScreenTemplate` so the code generation module can extract this structure and replicate it for every generated screen.
+
+Whenever you modify this function (for example, adding a `FloatingActionButton` to the `Scaffold`), re-run the `codegen` module to regenerate the screen files with the updated layout.
 
 ```kotlin
 @Composable
