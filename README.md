@@ -159,9 +159,9 @@ A **Figma design** converted into JSON.
 
 - Generates explicit Compose code from Figma designs.
 - Uses `RenderScreen.kt` as the template for the base layout of each screen.
-- Also extracts `TopBarRenderer.Render`, `BottomBarRenderer.Render` and
-  `RenderComponent` so updates in these functions propagate to the generated
-  code automatically.
+- Automatically extracts every `Render` method from the component `Renderer`
+  objects as well as `RenderComponent`, so changes to any renderer are reflected
+  in the generated code.
 
 ### 📡 **Figma2SDUI Module**
 - Fetches **Figma API data**.

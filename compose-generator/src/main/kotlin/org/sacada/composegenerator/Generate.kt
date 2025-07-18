@@ -17,13 +17,13 @@ import java.io.File
 
 /**
  * Entry point for generating Compose code from a Figma file.
- * Arguments: apiKey fileKey outputDir renderScreenFile topBarFile bottomBarFile renderComponentFile
+ * Arguments: apiKey fileKey outputDir renderScreenFile componentsDir
  */
 fun main(args: Array<String>) {
-    if (args.size < 7) {
+    if (args.size < 5) {
         println(
             "Usage: generate <apiKey> <fileKey> <outputDir> " +
-                "<renderScreenFile> <topBarFile> <bottomBarFile> <renderComponentFile>"
+                "<renderScreenFile> <componentsDir>"
         )
         return
     }
@@ -31,9 +31,7 @@ fun main(args: Array<String>) {
     val fileKey = args[1]
     val outputDir = File(args[2])
     val renderScreenFile = File(args[3])
-    val topBarFile = File(args[4])
-    val bottomBarFile = File(args[5])
-    val renderComponentFile = File(args[6])
+    val componentsDir = File(args[4])
 
     println("Generating Compose code for Figma in folder: $outputDir")
 
@@ -43,9 +41,7 @@ fun main(args: Array<String>) {
             fileKey,
             outputDir,
             renderScreenFile,
-            topBarFile,
-            bottomBarFile,
-            renderComponentFile,
+            componentsDir,
         )
     }
 }
@@ -55,14 +51,11 @@ suspend fun generateCompose(
     fileKey: String,
     outputDir: File,
     renderScreenFile: File,
-    topBarFile: File,
-    bottomBarFile: File,
-    renderComponentFile: File,
+    componentsDir: File,
 ) {
     val renderScreenTemplate = TemplateExtractor.extractTemplate(renderScreenFile, "RenderScreen")
-    val topBarTemplate = TemplateExtractor.extractTemplate(topBarFile, "Render")
-    val bottomBarTemplate = TemplateExtractor.extractTemplate(bottomBarFile, "Render")
-    val renderComponentTemplate = TemplateExtractor.extractTemplate(renderComponentFile, "RenderComponent")
+    val rendererTemplates = loadRendererTemplates(componentsDir)
+    val renderComponentTemplate = loadRenderComponentTemplate(componentsDir)
     val rootDocument = fetchFigmaData(apiKey, fileKey) ?: return
 
     val json = FigmaJsonConverter(JsonBuilderVisitor()).convert(rootDocument)
@@ -82,7 +75,7 @@ suspend fun generateCompose(
                     Json::class,
                     ViewScreen::class,
                 )
-                .add(helperCode(topBarTemplate, bottomBarTemplate, renderComponentTemplate))
+                .add(helperCode(rendererTemplates, renderComponentTemplate))
                 .add(renderScreenTemplate.body)
                 .build()
 
@@ -102,7 +95,8 @@ suspend fun generateCompose(
                 .addImport("org.sacada.core.model", "ViewScreen")
                 .addImport("androidx.compose.runtime", "Composable")
 
-        val imports = (renderScreenTemplate.imports + topBarTemplate.imports + bottomBarTemplate.imports + renderComponentTemplate.imports).distinct()
+        val rendererImports = rendererTemplates.flatMap { it.info.imports }
+        val imports = (renderScreenTemplate.imports + rendererImports + renderComponentTemplate.imports).distinct()
         imports.forEach { imp ->
             val pkg = imp.substringBeforeLast('.')
             val name = imp.substringAfterLast('.')
@@ -116,32 +110,44 @@ suspend fun generateCompose(
 }
 
 private fun helperCode(
-    topBar: TemplateExtractor.TemplateInfo,
-    bottomBar: TemplateExtractor.TemplateInfo,
+    renderers: List<RendererTemplate>,
     renderComponent: TemplateExtractor.TemplateInfo,
 ): String {
-    val topBarBody = topBar.body.prependIndent("        ")
-    val bottomBarBody = bottomBar.body.prependIndent("        ")
+    val builder = StringBuilder()
+    renderers.forEach { renderer ->
+        val body = renderer.info.body.prependIndent("        ")
+        builder.appendLine("object ${renderer.name} {")
+        builder.appendLine("    @Composable")
+        builder.appendLine("    fun Render(component: ViewComponent, modifier: Modifier? = null) {")
+        builder.appendLine(body)
+        builder.appendLine("    }")
+        builder.appendLine("}")
+        builder.appendLine()
+    }
+
     val renderComponentBody = renderComponent.body.prependIndent("    ")
+    builder.appendLine("@Composable")
+    builder.appendLine("fun RenderComponent(component: ViewComponent, modifier: Modifier? = null) {")
+    builder.appendLine(renderComponentBody)
+    builder.appendLine("}")
 
-    return """
-        object TopBarRenderer {
-            @Composable
-            fun Render(component: ViewComponent, modifier: Modifier? = null) {
-$topBarBody
-            }
-        }
+    return builder.toString().trimIndent()
+}
 
-        object BottomBarRenderer {
-            @Composable
-            fun Render(component: ViewComponent, modifier: Modifier? = null) {
-$bottomBarBody
-            }
-        }
+private data class RendererTemplate(val name: String, val info: TemplateExtractor.TemplateInfo)
 
-        @Composable
-        fun RenderComponent(component: ViewComponent, modifier: Modifier? = null) {
-$renderComponentBody
+private fun loadRendererTemplates(componentsDir: File): List<RendererTemplate> =
+    componentsDir
+        .walkTopDown()
+        .filter { it.isFile && it.name.endsWith("Renderer.kt") }
+        .map { file ->
+            val name = file.nameWithoutExtension
+            val info = TemplateExtractor.extractTemplate(file, "Render")
+            RendererTemplate(name, info)
         }
-    """.trimIndent()
+        .toList()
+
+private fun loadRenderComponentTemplate(componentsDir: File): TemplateExtractor.TemplateInfo {
+    val file = componentsDir.walkTopDown().first { it.name == "RenderComponent.kt" }
+    return TemplateExtractor.extractTemplate(file, "RenderComponent")
 }
