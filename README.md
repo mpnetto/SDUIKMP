@@ -155,6 +155,11 @@ A **Figma design** converted into JSON.
 ### 🔄 **JsonBuilder Module**
 - Converts **Figma component data** into structured **Server-Driven UI JSON**.
 
+### ✨ **Compose Generator**
+
+- Generates explicit Compose code from Figma designs.
+- Uses `RenderScreen.kt` as the template for the base layout of each screen.
+
 ### 📡 **Figma2SDUI Module**
 - Fetches **Figma API data**.
 - Parses Figma JSON into structured objects.

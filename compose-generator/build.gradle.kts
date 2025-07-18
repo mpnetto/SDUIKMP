@@ -17,6 +17,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlin.poet)
     implementation(libs.kotlinx.coroutines.core)
+    implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:${libs.versions.kotlin.get()}")
 }
 
 val generateFigmaCompose by tasks.registering(JavaExec::class) {
@@ -42,6 +43,7 @@ val generateFigmaCompose by tasks.registering(JavaExec::class) {
             .dir("generated/figmaCompose")
             .get()
             .asFile.absolutePath,
+        project.rootProject.file("data/src/commonMain/kotlin/org/sacada/data/ui/screen/RenderScreen.kt").absolutePath,
     )
 }
 

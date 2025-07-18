@@ -16,21 +16,22 @@ import java.io.File
 
 /**
  * Entry point for generating Compose code from a Figma file.
- * Arguments: apiKey fileKey outputDir
+ * Arguments: apiKey fileKey outputDir templateFile
  */
 fun main(args: Array<String>) {
-    if (args.size < 3) {
-        println("Usage: generate <apiKey> <fileKey> <outputDir>")
+    if (args.size < 4) {
+        println("Usage: generate <apiKey> <fileKey> <outputDir> <templateFile>")
         return
     }
     val apiKey = args[0]
     val fileKey = args[1]
     val outputDir = File(args[2])
+    val templateFile = File(args[3])
 
     println("Generating Compose code for Figma in folder: $outputDir")
 
     runBlocking {
-        generateCompose(apiKey, fileKey, outputDir)
+        generateCompose(apiKey, fileKey, outputDir, templateFile)
     }
 }
 
@@ -38,7 +39,9 @@ suspend fun generateCompose(
     apiKey: String,
     fileKey: String,
     outputDir: File,
+    templateFile: File,
 ) {
+    val template = TemplateExtractor.extractTemplate(templateFile, "RenderScreen")
     val rootDocument = fetchFigmaData(apiKey, fileKey) ?: return
 
     val json = FigmaJsonConverter(JsonBuilderVisitor()).convert(rootDocument)
@@ -57,7 +60,7 @@ suspend fun generateCompose(
                     "val screen = %T.decodeFromString(%T.serializer(), json)",
                     Json::class,
                     ViewScreen::class,
-                ).addStatement("%T(screen)", ClassName("org.sacada.data.ui.screen", "RenderScreen"))
+                ).add(template.body)
                 .build()
 
         val funSpec =
@@ -68,44 +71,22 @@ suspend fun generateCompose(
                 .addCode(codeBlock)
                 .build()
 
-        val fileSpec =
+        val fileSpecBuilder =
             FileSpec
                 .builder("org.sacada.generated", funcName)
                 .addFunction(funSpec)
                 .addImport("kotlinx.serialization.json", "Json")
                 .addImport("org.sacada.core.model", "ViewScreen")
-                .addImport("org.sacada.data.ui.screen", "RenderScreen")
                 .addImport("androidx.compose.runtime", "Composable")
-                .build()
+
+        template.imports.forEach { imp ->
+            val pkg = imp.substringBeforeLast('.')
+            val name = imp.substringAfterLast('.')
+            fileSpecBuilder.addImport(pkg, name)
+        }
+
+        val fileSpec = fileSpecBuilder.build()
 
         fileSpec.writeTo(outputDir)
     }
-}
-
-private fun generateScreenCode(component: org.sacada.core.model.ViewComponent?): CodeBlock {
-    val builder = CodeBlock.builder()
-    component?.let { comp ->
-        builder.add(generateComponentCode(comp))
-    }
-    return builder.build()
-}
-
-private fun generateComponentCode(component: org.sacada.core.model.ViewComponent): CodeBlock =
-    when (component.type) {
-        "Column" -> generateColumn(component)
-        "Text" -> generateText(component)
-        else -> CodeBlock.of("/* Unsupported component: %L */\n", component.type)
-    }
-
-private fun generateColumn(component: org.sacada.core.model.ViewComponent): CodeBlock {
-    val children =
-        component.children.joinToString("\n") { child ->
-            generateComponentCode(child).toString()
-        }
-    return CodeBlock.of("Column {\n%L\n}\n", children)
-}
-
-private fun generateText(component: org.sacada.core.model.ViewComponent): CodeBlock {
-    val text = component.attributes["content"]?.toString() ?: """"""
-    return CodeBlock.of("Text(text = %L)\n", text)
 }
