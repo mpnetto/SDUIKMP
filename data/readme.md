@@ -120,6 +120,13 @@ fun RenderScreen(screen: ViewScreen) {
 }
 ```
 
+> **Template Source**
+>
+> `RenderScreen.kt` now acts as the **screen template** for the `compose-generator` module. When the
+> generator runs, it parses this file and injects its structure directly into the generated Compose
+> functions. Any structural change made here (for example adding a `FloatingActionButton`) will
+> automatically appear in the generated screens without further modifications.
+
 ---
 
 ## 🔧 Utilities

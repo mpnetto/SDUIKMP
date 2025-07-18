@@ -72,5 +72,11 @@ kotlin {
                 implementation(libs.ktor.client.darwin)
             }
         }
+
+        val desktopMain by getting {
+            dependencies {
+                implementation(libs.ktor.client.cio)
+            }
+        }
     }
 }
