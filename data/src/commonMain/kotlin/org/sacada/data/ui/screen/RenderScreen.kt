@@ -36,5 +36,4 @@ fun RenderScreen(screen: ViewScreen) {
             screen.layout?.let { RenderComponent(it) }
         }
     }
-//    }
 }

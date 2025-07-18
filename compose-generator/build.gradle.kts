@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.kotlinJvm)
     alias(libs.plugins.kotlinSerialization)
@@ -22,9 +24,37 @@ val generateFigmaCompose by tasks.registering(JavaExec::class) {
     description = "Generate Compose code from Figma file"
     mainClass.set("org.sacada.composegenerator.GenerateKt")
     classpath = sourceSets["main"].runtimeClasspath
+    val apiKey =
+        project.loadLocalProperty(
+            path = "local.properties",
+            propertyName = "FIGMA_API_KEY",
+        )
+    val apiSecret =
+        project.loadLocalProperty(
+            path = "local.properties",
+            propertyName = "FIGMA_FILE_KEY",
+        )
+
     args(
-        project.findProperty("FIGMA_API_KEY") ?: "",
-        project.findProperty("FIGMA_FILE_KEY") ?: "",
-        layout.buildDirectory.dir("generated/figmaCompose").get().asFile.absolutePath,
+        apiKey,
+        apiSecret,
+        layout.buildDirectory
+            .dir("generated/figmaCompose")
+            .get()
+            .asFile.absolutePath,
     )
+}
+
+fun Project.loadLocalProperty(
+    path: String,
+    propertyName: String,
+): String {
+    val localProperties = Properties()
+    val localPropertiesFile = project.rootProject.file(path)
+    if (localPropertiesFile.exists()) {
+        localProperties.load(localPropertiesFile.inputStream())
+        return localProperties.getProperty(propertyName)
+    } else {
+        throw GradleException("can not find property : $propertyName")
+    }
 }
