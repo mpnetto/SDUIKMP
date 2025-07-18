@@ -20,7 +20,8 @@ object CodegenMain {
             val json = convertFigmaData(apiKey, fileKey)
             val screens = json?.let { JsonParser.parseScreens(it.toString()) }
             if (screens != null) {
-                val code = ComposeCodeGenerator.generate(screens)
+                val templateFile = File("data/src/commonMain/kotlin/org/sacada/data/ui/screen/RenderScreen.kt")
+                val code = ComposeCodeGenerator.generate(screens, templateFile)
                 outputDir.mkdirs()
                 File(outputDir, "GeneratedScreens.kt").writeText(code)
                 println("Generated Compose code at ${'$'}outputDir/GeneratedScreens.kt")

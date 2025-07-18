@@ -33,6 +33,7 @@ kotlin {
             implementation(projects.core)
             implementation(projects.jsonbuilder)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlin.compiler.embeddable)
             implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
         }
     }
