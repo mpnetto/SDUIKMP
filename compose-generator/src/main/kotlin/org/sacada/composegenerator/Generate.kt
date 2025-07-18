@@ -75,7 +75,7 @@ suspend fun generateCompose(
                     Json::class,
                     ViewScreen::class,
                 )
-                .add(helperCode(rendererTemplates, renderComponentTemplate))
+                .add(helperCode(rendererTemplates))
                 .add(renderScreenTemplate.body)
                 .build()
 
@@ -111,24 +111,33 @@ suspend fun generateCompose(
 
 private fun helperCode(
     renderers: List<RendererTemplate>,
-    renderComponent: TemplateExtractor.TemplateInfo,
 ): String {
     val builder = StringBuilder()
+
     renderers.forEach { renderer ->
-        val body = renderer.info.body.prependIndent("        ")
-        builder.appendLine("object ${renderer.name} {")
-        builder.appendLine("    @Composable")
-        builder.appendLine("    fun Render(component: ViewComponent, modifier: Modifier? = null) {")
+        val body = renderer.info.body.prependIndent("    ")
+        builder.appendLine("@Composable")
+        builder.appendLine("fun ${renderer.name}(component: ViewComponent, modifier: Modifier? = null) {")
         builder.appendLine(body)
-        builder.appendLine("    }")
         builder.appendLine("}")
         builder.appendLine()
     }
 
-    val renderComponentBody = renderComponent.body.prependIndent("    ")
     builder.appendLine("@Composable")
     builder.appendLine("fun RenderComponent(component: ViewComponent, modifier: Modifier? = null) {")
-    builder.appendLine(renderComponentBody)
+    builder.appendLine("    when (component.type.lowercase()) {")
+    renderers.forEach { renderer ->
+        val type = renderer.name.removeSuffix(\"Renderer\").lowercase()
+        builder.appendLine(\"        \" + \"\"\"$type\"\"\" + \" -> ${renderer.name}(component, modifier)\")
+    }
+    builder.appendLine("        else -> RenderUnsupported(component)")
+    builder.appendLine("    }")
+    builder.appendLine("}")
+    builder.appendLine()
+
+    builder.appendLine("@Composable")
+    builder.appendLine("fun RenderUnsupported(component: ViewComponent) {")
+    builder.appendLine("    Text(text = \"Unsupported component: ${'$'}{component.type}\")")
     builder.appendLine("}")
 
     return builder.toString().trimIndent()

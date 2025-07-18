@@ -126,9 +126,9 @@ fun RenderScreen(screen: ViewScreen) {
 > generator runs, it parses this file and injects its structure directly into the generated Compose
 > functions. Any structural change made here (for example adding a `FloatingActionButton`) will
 > automatically appear in the generated screens without further modifications.
-> The generator also scans the `components` folder and extracts every renderer's
-> `Render` method along with `RenderComponent`. This means any update to a
-> renderer automatically propagates to the generated code.
+> The generator also scans the `components` folder and extracts each renderer's `Render`
+> function, embedding it as a top-level composable together with `RenderComponent`. This means any
+> update to a renderer automatically propagates to the generated code.
 
 ---
 
