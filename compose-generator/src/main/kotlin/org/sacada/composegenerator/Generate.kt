@@ -7,9 +7,10 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
-import org.sacada.core.model.ViewScreen
 import org.sacada.core.model.ViewComponent
+import org.sacada.core.model.ViewScreen
 import org.sacada.core.util.JsonParser
+import org.sacada.data.ui.components.ComponentRegistry
 import org.sacada.figma2sdui.fetchFigmaData
 import org.sacada.jsonbuilder.converter.FigmaJsonConverter
 import org.sacada.jsonbuilder.generator.JsonBuilderVisitor
@@ -23,7 +24,7 @@ fun main(args: Array<String>) {
     if (args.size < 5) {
         println(
             "Usage: generate <apiKey> <fileKey> <outputDir> " +
-                "<renderScreenFile> <componentsDir>"
+                "<renderScreenFile> <componentsDir>",
         )
         return
     }
@@ -66,6 +67,9 @@ suspend fun generateCompose(
 
         val screenJson = Json.encodeToString(screen)
 
+        // Processa componentes TopBar e gera código específico
+        processTopBarComponents(screen, outputDir)
+
         val codeBlock =
             CodeBlock
                 .builder()
@@ -74,8 +78,7 @@ suspend fun generateCompose(
                     "val screen = %T.decodeFromString(%T.serializer(), json)",
                     Json::class,
                     ViewScreen::class,
-                )
-                .add(helperCode(rendererTemplates))
+                ).add(helperCode(rendererTemplates))
                 .add(renderScreenTemplate.body)
                 .build()
 
@@ -109,9 +112,7 @@ suspend fun generateCompose(
     }
 }
 
-private fun helperCode(
-    renderers: List<RendererTemplate>,
-): String {
+private fun helperCode(renderers: List<RendererTemplate>): String {
     val builder = StringBuilder()
 
     renderers.forEach { renderer ->
@@ -127,23 +128,36 @@ private fun helperCode(
     builder.appendLine("fun RenderComponent(component: ViewComponent, modifier: Modifier? = null) {")
     builder.appendLine("    when (component.type.lowercase()) {")
     renderers.forEach { renderer ->
-        val type = renderer.name.removeSuffix(\"Renderer\").lowercase()
-        builder.appendLine(\"        \" + \"\"\"$type\"\"\" + \" -> ${renderer.name}(component, modifier)\")
+        val type = renderer.name.removeSuffix("Renderer").lowercase()
+        builder.appendLine("        \"$type\" -> ${renderer.name}(component, modifier)")
     }
     builder.appendLine("        else -> RenderUnsupported(component)")
     builder.appendLine("    }")
     builder.appendLine("}")
     builder.appendLine()
 
+    // Adiciona função para gerar código usando CodeGenerator
+    builder.appendLine("fun generateComponentCode(component: ViewComponent): String {")
+    builder.appendLine("    return try {")
+    builder.appendLine("        ComponentRegistry.getCodeGenerator(component.type).generateCode(component)")
+    builder.appendLine("    } catch (e: Exception) {")
+    builder.appendLine("        \"// Code generation not supported for component type: \${component.type}\"")
+    builder.appendLine("    }")
+    builder.appendLine("}")
+    builder.appendLine()
+
     builder.appendLine("@Composable")
     builder.appendLine("fun RenderUnsupported(component: ViewComponent) {")
-    builder.appendLine("    Text(text = \"Unsupported component: ${'$'}{component.type}\")")
+    builder.appendLine("    Text(text = \"Unsupported component: \${component.type}\")")
     builder.appendLine("}")
 
     return builder.toString().trimIndent()
 }
 
-private data class RendererTemplate(val name: String, val info: TemplateExtractor.TemplateInfo)
+private data class RendererTemplate(
+    val name: String,
+    val info: TemplateExtractor.TemplateInfo,
+)
 
 private fun loadRendererTemplates(componentsDir: File): List<RendererTemplate> =
     componentsDir
@@ -153,10 +167,42 @@ private fun loadRendererTemplates(componentsDir: File): List<RendererTemplate> =
             val name = file.nameWithoutExtension
             val info = TemplateExtractor.extractTemplate(file, "Render")
             RendererTemplate(name, info)
-        }
-        .toList()
+        }.toList()
 
 private fun loadRenderComponentTemplate(componentsDir: File): TemplateExtractor.TemplateInfo {
     val file = componentsDir.walkTopDown().first { it.name == "RenderComponent.kt" }
     return TemplateExtractor.extractTemplate(file, "RenderComponent")
+}
+
+private fun processTopBarComponents(
+    screen: ViewScreen,
+    outputDir: File,
+) {
+    fun processComponent(component: ViewComponent) {
+        if (component.type.lowercase() == "topbar") {
+            try {
+                val codeGenerator = ComponentRegistry.getCodeGenerator("topbar")
+                val generatedCode = codeGenerator.generateCode(component)
+
+                // Salva o código gerado em um arquivo separado
+                val fileName = "TopBar_${component.id}.kt"
+                val file = File(outputDir, fileName)
+                file.writeText(generatedCode)
+
+                println("Generated TopBar code for component ${component.id} -> $fileName")
+            } catch (e: Exception) {
+                println("Failed to generate code for TopBar component ${component.id}: ${e.message}")
+            }
+        }
+
+        // Processa recursivamente os componentes filhos
+        component.children.forEach { child ->
+            processComponent(child)
+        }
+    }
+
+    // Processa os componentes da tela conforme a estrutura do ViewScreen
+    screen.topBar?.let { processComponent(it) }
+    screen.bottomBar?.let { processComponent(it) }
+    screen.layout?.let { processComponent(it) }
 }

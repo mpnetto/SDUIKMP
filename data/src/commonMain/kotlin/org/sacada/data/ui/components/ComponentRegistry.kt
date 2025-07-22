@@ -30,6 +30,7 @@ import org.sacada.data.ui.components.text.TextGenerator
 import org.sacada.data.ui.components.text.TextRenderer
 import org.sacada.data.ui.components.textField.TextFieldGenerator
 import org.sacada.data.ui.components.textField.TextFieldRenderer
+import org.sacada.data.ui.components.topBar.TopBarCodeGenerator
 import org.sacada.data.ui.components.topBar.TopBarGenerator
 import org.sacada.data.ui.components.topBar.TopBarRenderer
 
@@ -72,5 +73,11 @@ object ComponentRegistry {
             ComponentType.Text -> TextGenerator
             ComponentType.TextField -> TextFieldGenerator
             ComponentType.TopBar -> TopBarGenerator
+        }
+
+    fun getCodeGenerator(type: String): Component.CodeGenerator =
+        when (ComponentType.fromType(type)) {
+            ComponentType.TopBar -> TopBarCodeGenerator
+            else -> error("Code generation not supported for component type: $type")
         }
 }
