@@ -1,8 +1,6 @@
 package org.sacada.data.ui.components.topBar
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.sacada.annotation.RegisterComponent
@@ -10,17 +8,10 @@ import org.sacada.core.model.ViewComponent
 import org.sacada.core.util.getIntAttribute
 import org.sacada.core.util.getStringAttribute
 import org.sacada.data.ui.components.Component
-import org.sacada.data.ui.components.box.BoxRenderer
-import org.sacada.data.util.createActions
 
 @RegisterComponent
-object TopBarRenderer : Component.Renderer {
-    @OptIn(ExperimentalMaterial3Api::class)
-    @Composable
-    override fun Render(
-        component: ViewComponent,
-        modifier: Modifier?,
-    ) {
+object TopBarCodeGenerator : Component.CodeGenerator {
+    override fun generateCode(component: ViewComponent): String {
         val scrollBehaviorType = component.getStringAttribute("scrollBehavior")
         val appBarType = component.getStringAttribute("topBarType")
         val barTitle = component.getStringAttribute("title")
@@ -28,9 +19,6 @@ object TopBarRenderer : Component.Renderer {
         val paddingRight = component.getIntAttribute("paddingRight")
         val paddingTop = component.getIntAttribute("paddingTop")
         val paddingBottom = component.getIntAttribute("paddingBottom")
-
-        val navigationIcon = createNavigationIconComposable(component)
-        val actions = component.createActions()
 
         val paddingModifier =
             Modifier.padding(
@@ -40,21 +28,18 @@ object TopBarRenderer : Component.Renderer {
                 bottom = paddingBottom.dp,
             )
 
-        TopBar(
-            appBarType = appBarType,
-            barTitle = barTitle,
-            navigationIcon = navigationIcon,
-            scrollBehaviorType = scrollBehaviorType,
-            actions = actions,
-            paddingModifier = paddingModifier,
-        )
-    }
+        val code = StringBuilder()
+        code.appendLine("// Code generated for TopBar (id=${component.id})")
+        code.append("TopBar(")
 
-    @Composable
-    private fun createNavigationIconComposable(component: ViewComponent): @Composable () -> Unit =
-        {
-            component.children.find { it.type == "navigationIcon" }?.let {
-                BoxRenderer.Render(it)
-            }
-        }
+        code.appendLine("component = $component },")
+        code.appendLine("scrollBehaviorType = $scrollBehaviorType },")
+        code.appendLine("appBarType = $appBarType },")
+        code.appendLine("barTitle = $barTitle },")
+        code.appendLine("paddingModifier = $paddingModifier },")
+
+        code.appendLine(")")
+
+        return code.toString()
+    }
 }

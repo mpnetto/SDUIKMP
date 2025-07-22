@@ -27,6 +27,15 @@ fun ViewComponent.getBooleanAttribute(key: String): Boolean =
         }
     } ?: false
 
+fun ViewComponent.getIntAttribute(key: String): Int =
+    attributes[key]?.let {
+        if (it is JsonPrimitive) {
+            it.intOrNull
+        } else {
+            it.toString().toIntOrNull()
+        }
+    } ?: 0
+
 fun ViewComponent.getSubAttributes(key: String): Map<String, JsonElement>? = attributes[key]?.jsonObject?.toMap()
 
 fun ViewComponent.isValid(value: String): Boolean {
@@ -39,7 +48,5 @@ fun ViewComponent.isValid(value: String): Boolean {
     if (minLength != null && value.length < minLength) return false
 
     val regex = validationAttributes["regex"]?.jsonPrimitive?.contentOrNull
-    if (regex != null && !Regex(regex).matches(value)) return false
-
-    return true
+    return !(regex != null && !Regex(regex).matches(value))
 }

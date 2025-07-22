@@ -24,4 +24,8 @@ interface Component {
             performAction: ((MutableMap<String, JsonElement>) -> Unit)? = null,
         ): JsonObject
     }
+
+    interface CodeGenerator {
+        fun generateCode(component: ViewComponent): String
+    }
 }

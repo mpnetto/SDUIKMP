@@ -44,6 +44,7 @@ val generateFigmaCompose by tasks.registering(JavaExec::class) {
             .get()
             .asFile.absolutePath,
         project.rootProject.file("data/src/commonMain/kotlin/org/sacada/data/ui/screen/RenderScreen.kt").absolutePath,
+        project.rootProject.file("data/src/commonMain/kotlin/org/sacada/data/ui/components").absolutePath,
     )
 }
 
