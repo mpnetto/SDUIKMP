@@ -120,8 +120,8 @@ fun Project.loadLocalProperty(
     val localPropertiesFile = project.rootProject.file(path)
     if (localPropertiesFile.exists()) {
         localProperties.load(localPropertiesFile.inputStream())
-        return localProperties.getProperty(propertyName)
+        return localProperties.getProperty(propertyName) ?: ""
     } else {
-        throw GradleException("can not find property : $propertyName")
+        return ""
     }
 }
