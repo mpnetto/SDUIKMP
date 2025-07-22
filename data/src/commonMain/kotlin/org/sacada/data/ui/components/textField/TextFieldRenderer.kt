@@ -14,6 +14,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import org.sacada.annotation.RegisterComponent
+import org.sacada.core.blueprint.Blueprint
+import org.sacada.core.blueprint.GenericBlueprint
 import org.sacada.core.model.ViewComponent
 import org.sacada.core.util.getBooleanAttribute
 import org.sacada.core.util.getStringAttribute
@@ -26,10 +28,11 @@ import org.sacada.data.util.getPadding
 object TextFieldRenderer : Component.Renderer {
     @Composable
     override fun Render(
-        component: ViewComponent,
+        blueprint: Blueprint,
         modifier: Modifier?,
     ) {
-//        val viewModel = LocalScreenViewModel.current
+        val component = (blueprint as? GenericBlueprint)?.component ?: return
+        //        val viewModel = LocalScreenViewModel.current
         val textValue = remember { mutableStateOf("") }
         val isValid = remember { mutableStateOf(component.isValid("")) }
 

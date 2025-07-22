@@ -22,31 +22,32 @@ import androidx.compose.ui.unit.dp
 import kotlinx.serialization.json.JsonPrimitive
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.sacada.annotation.RegisterComponent
+import org.sacada.core.blueprint.Blueprint
+import org.sacada.core.blueprint.TopBarBlueprint
 import org.sacada.core.model.ViewComponent
-import org.sacada.core.util.getStringAttribute
 import org.sacada.data.ui.components.Component
 import org.sacada.data.ui.components.box.BoxRenderer
-import org.sacada.data.util.createActions
 
 @RegisterComponent
 object TopBarRenderer : Component.Renderer {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Render(
-        component: ViewComponent,
+        blueprint: Blueprint,
         modifier: Modifier?,
     ) {
-        val scrollBehavior = resolveScrollBehavior(component.getStringAttribute("scrollBehavior"))
-        val appBar = remember { resolveAppBarType(component.getStringAttribute("topBarType")) }
+        blueprint as TopBarBlueprint
+        val scrollBehavior = resolveScrollBehavior(blueprint.scrollBehavior)
+        val appBar = remember { resolveAppBarType(blueprint.variant) }
 
-        val title = createTitleComposable(component.getStringAttribute("title"))
-        val navigationIcon = createNavigationIconComposable(component)
-        val actions = component.createActions()
+        val title = createTitleComposable(blueprint.title)
+        val navigationIcon = createNavigationIconComposable(blueprint.navigationIcon)
+        val actions = createActionsFromChildren(blueprint.actions)
 
-        val paddingLeft = component.getStringAttribute("paddingLeft").toIntOrNull() ?: 0
-        val paddingRight = component.getStringAttribute("paddingRight").toIntOrNull() ?: 0
-        val paddingTop = component.getStringAttribute("paddingTop").toIntOrNull() ?: 0
-        val paddingBottom = component.getStringAttribute("paddingBottom").toIntOrNull() ?: 0
+        val paddingLeft = blueprint.paddingLeft
+        val paddingRight = blueprint.paddingRight
+        val paddingTop = blueprint.paddingTop
+        val paddingBottom = blueprint.paddingBottom
 
         val paddingModifier =
             Modifier.padding(
@@ -162,8 +163,16 @@ private fun createTitleComposable(barTitle: String): @Composable () -> Unit =
 @Composable
 private fun createNavigationIconComposable(component: ViewComponent): @Composable () -> Unit =
     {
-        component.children.find { it.type == "navigationIcon" }?.let {
+        component.let {
             BoxRenderer.Render(it)
+        }
+    }
+
+@Composable
+private fun createActionsFromChildren(children: List<ViewComponent>): @Composable RowScope.() -> Unit =
+    {
+        children.forEach { actionComponent ->
+            BoxRenderer.Render(actionComponent)
         }
     }
 
@@ -196,5 +205,5 @@ fun PreviewRenderTopBar() {
                     ),
                 ),
         )
-    TopBarRenderer.Render(component = sampleComponent)
+    TopBarRenderer.Render(TopBarBlueprint.from(sampleComponent))
 }

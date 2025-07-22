@@ -32,6 +32,13 @@ import org.sacada.data.ui.components.textField.TextFieldGenerator
 import org.sacada.data.ui.components.textField.TextFieldRenderer
 import org.sacada.data.ui.components.topBar.TopBarGenerator
 import org.sacada.data.ui.components.topBar.TopBarRenderer
+import org.sacada.core.blueprint.Blueprint
+import org.sacada.core.blueprint.BoxBlueprint
+import org.sacada.core.blueprint.ButtonBlueprint
+import org.sacada.core.blueprint.GenericBlueprint
+import org.sacada.core.blueprint.TextBlueprint
+import org.sacada.core.blueprint.TopBarBlueprint
+import org.sacada.core.model.ViewComponent
 
 object ComponentRegistry {
     fun getRenderer(type: String): Renderer =
@@ -72,5 +79,14 @@ object ComponentRegistry {
             ComponentType.Text -> TextGenerator
             ComponentType.TextField -> TextFieldGenerator
             ComponentType.TopBar -> TopBarGenerator
+        }
+
+    fun createBlueprint(component: ViewComponent): Blueprint =
+        when (ComponentType.fromType(component.type)) {
+            ComponentType.Box -> BoxBlueprint.from(component)
+            ComponentType.Button -> ButtonBlueprint.from(component)
+            ComponentType.Text -> TextBlueprint.from(component)
+            ComponentType.TopBar -> TopBarBlueprint.from(component)
+            else -> GenericBlueprint(component.id, component)
         }
 }

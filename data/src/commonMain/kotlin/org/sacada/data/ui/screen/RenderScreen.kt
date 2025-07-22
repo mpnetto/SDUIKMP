@@ -7,6 +7,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import org.sacada.core.model.ViewScreen
+import org.sacada.core.blueprint.TopBarBlueprint
+import org.sacada.data.ui.components.ComponentRegistry
 import org.sacada.data.ui.components.RenderComponent
 import org.sacada.data.ui.components.bottomBar.BottomBarRenderer
 import org.sacada.data.ui.components.topBar.TopBarRenderer
@@ -21,10 +23,10 @@ fun RenderScreen(screen: ViewScreen) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            screen.topBar?.let { TopBarRenderer.Render(it) }
+            screen.topBar?.let { TopBarRenderer.Render(TopBarBlueprint.from(it)) }
         },
         bottomBar = {
-            screen.bottomBar?.let { BottomBarRenderer.Render(it) }
+            screen.bottomBar?.let { BottomBarRenderer.Render(ComponentRegistry.createBlueprint(it)) }
         },
     ) { innerPadding ->
         Column(

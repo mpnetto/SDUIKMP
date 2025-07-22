@@ -8,8 +8,8 @@ import com.squareup.kotlinpoet.KModifier
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import org.sacada.core.model.ViewScreen
-import org.sacada.core.model.ViewComponent
 import org.sacada.core.util.JsonParser
+import org.sacada.data.ui.screen.RenderScreen
 import org.sacada.figma2sdui.fetchFigmaData
 import org.sacada.jsonbuilder.converter.FigmaJsonConverter
 import org.sacada.jsonbuilder.generator.JsonBuilderVisitor
@@ -53,9 +53,7 @@ suspend fun generateCompose(
     renderScreenFile: File,
     componentsDir: File,
 ) {
-    val renderScreenTemplate = TemplateExtractor.extractTemplate(renderScreenFile, "RenderScreen")
-    val rendererTemplates = loadRendererTemplates(componentsDir)
-    val renderComponentTemplate = loadRenderComponentTemplate(componentsDir)
+    // RenderScreen composable from runtime module
     val rootDocument = fetchFigmaData(apiKey, fileKey) ?: return
 
     val json = FigmaJsonConverter(JsonBuilderVisitor()).convert(rootDocument)
@@ -75,8 +73,7 @@ suspend fun generateCompose(
                     Json::class,
                     ViewScreen::class,
                 )
-                .add(helperCode(rendererTemplates))
-                .add(renderScreenTemplate.body)
+                .addStatement("RenderScreen(screen)")
                 .build()
 
         val funSpec =
@@ -95,13 +92,7 @@ suspend fun generateCompose(
                 .addImport("org.sacada.core.model", "ViewScreen")
                 .addImport("androidx.compose.runtime", "Composable")
 
-        val rendererImports = rendererTemplates.flatMap { it.info.imports }
-        val imports = (renderScreenTemplate.imports + rendererImports + renderComponentTemplate.imports).distinct()
-        imports.forEach { imp ->
-            val pkg = imp.substringBeforeLast('.')
-            val name = imp.substringAfterLast('.')
-            fileSpecBuilder.addImport(pkg, name)
-        }
+        fileSpecBuilder.addImport("org.sacada.data.ui.screen", "RenderScreen")
 
         val fileSpec = fileSpecBuilder.build()
 
@@ -109,54 +100,3 @@ suspend fun generateCompose(
     }
 }
 
-private fun helperCode(
-    renderers: List<RendererTemplate>,
-): String {
-    val builder = StringBuilder()
-
-    renderers.forEach { renderer ->
-        val body = renderer.info.body.prependIndent("    ")
-        builder.appendLine("@Composable")
-        builder.appendLine("fun ${renderer.name}(component: ViewComponent, modifier: Modifier? = null) {")
-        builder.appendLine(body)
-        builder.appendLine("}")
-        builder.appendLine()
-    }
-
-    builder.appendLine("@Composable")
-    builder.appendLine("fun RenderComponent(component: ViewComponent, modifier: Modifier? = null) {")
-    builder.appendLine("    when (component.type.lowercase()) {")
-    renderers.forEach { renderer ->
-        val type = renderer.name.removeSuffix(\"Renderer\").lowercase()
-        builder.appendLine(\"        \" + \"\"\"$type\"\"\" + \" -> ${renderer.name}(component, modifier)\")
-    }
-    builder.appendLine("        else -> RenderUnsupported(component)")
-    builder.appendLine("    }")
-    builder.appendLine("}")
-    builder.appendLine()
-
-    builder.appendLine("@Composable")
-    builder.appendLine("fun RenderUnsupported(component: ViewComponent) {")
-    builder.appendLine("    Text(text = \"Unsupported component: ${'$'}{component.type}\")")
-    builder.appendLine("}")
-
-    return builder.toString().trimIndent()
-}
-
-private data class RendererTemplate(val name: String, val info: TemplateExtractor.TemplateInfo)
-
-private fun loadRendererTemplates(componentsDir: File): List<RendererTemplate> =
-    componentsDir
-        .walkTopDown()
-        .filter { it.isFile && it.name.endsWith("Renderer.kt") }
-        .map { file ->
-            val name = file.nameWithoutExtension
-            val info = TemplateExtractor.extractTemplate(file, "Render")
-            RendererTemplate(name, info)
-        }
-        .toList()
-
-private fun loadRenderComponentTemplate(componentsDir: File): TemplateExtractor.TemplateInfo {
-    val file = componentsDir.walkTopDown().first { it.name == "RenderComponent.kt" }
-    return TemplateExtractor.extractTemplate(file, "RenderComponent")
-}

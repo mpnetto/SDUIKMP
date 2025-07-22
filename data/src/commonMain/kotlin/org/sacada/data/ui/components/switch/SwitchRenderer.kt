@@ -11,7 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.sacada.annotation.RegisterComponent
-import org.sacada.core.model.ViewComponent
+import org.sacada.core.blueprint.Blueprint
+import org.sacada.core.blueprint.GenericBlueprint
 import org.sacada.core.util.getStringAttribute
 import org.sacada.data.ui.components.Component
 
@@ -19,9 +20,10 @@ import org.sacada.data.ui.components.Component
 object SwitchRenderer : Component.Renderer {
     @Composable
     override fun Render(
-        component: ViewComponent,
+        blueprint: Blueprint,
         modifier: Modifier?
     ) {
+        val component = (blueprint as? GenericBlueprint)?.component ?: return
         val isChecked = rememberSaveable { mutableStateOf(false) }
         val label = component.getStringAttribute("label")
 

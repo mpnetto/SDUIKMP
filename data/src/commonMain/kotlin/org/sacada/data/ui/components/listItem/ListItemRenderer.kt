@@ -4,6 +4,8 @@ import androidx.compose.material3.ListItem
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import org.sacada.annotation.RegisterComponent
+import org.sacada.core.blueprint.Blueprint
+import org.sacada.core.blueprint.GenericBlueprint
 import org.sacada.core.model.ViewComponent
 import org.sacada.data.ui.components.Component
 import org.sacada.data.ui.components.RenderComponent
@@ -12,9 +14,10 @@ import org.sacada.data.ui.components.RenderComponent
 object ListItemRenderer : Component.Renderer {
     @Composable
     override fun Render(
-        component: ViewComponent,
+        blueprint: Blueprint,
         modifier: Modifier?
     ) {
+        val component = (blueprint as? GenericBlueprint)?.component ?: return
         val headline = component.children.getOrNull(0)
         val supporting = component.children.getOrNull(1)
 

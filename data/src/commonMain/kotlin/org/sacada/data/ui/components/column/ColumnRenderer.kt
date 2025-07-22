@@ -12,6 +12,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.sacada.annotation.RegisterComponent
+import org.sacada.core.blueprint.Blueprint
+import org.sacada.core.blueprint.GenericBlueprint
 import org.sacada.core.model.ViewComponent
 import org.sacada.core.util.getStringAttribute
 import org.sacada.data.ui.components.Component
@@ -26,9 +28,10 @@ import org.sacada.data.util.resolveVerticalArrangement
 object ColumnRenderer : Component.Renderer {
     @Composable
     override fun Render(
-        component: ViewComponent,
+        blueprint: Blueprint,
         modifier: Modifier?,
     ) {
+        val component = (blueprint as? GenericBlueprint)?.component ?: return
         val horizontalAlignment = component.resolveHorizontalAlignment()
         val verticalAlignment = component.resolveVerticalAlignment()
         val verticalArrangement = component.resolveVerticalArrangement(verticalAlignment)
@@ -124,6 +127,6 @@ fun PreviewRenderColumn_Varied() {
     """.parseJson()
 
     MaterialTheme {
-        ColumnRenderer.Render(component = sampleComponent)
+        ColumnRenderer.Render(GenericBlueprint(sampleComponent.id, sampleComponent))
     }
 }

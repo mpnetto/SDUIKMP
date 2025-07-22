@@ -9,6 +9,8 @@ import androidx.compose.ui.Modifier
 import kotlinx.serialization.json.JsonPrimitive
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.sacada.annotation.RegisterComponent
+import org.sacada.core.blueprint.Blueprint
+import org.sacada.core.blueprint.GenericBlueprint
 import org.sacada.core.model.ViewComponent
 import org.sacada.data.ui.components.Component
 import org.sacada.data.ui.components.RenderComponent
@@ -18,11 +20,11 @@ import org.sacada.data.util.createActions
 object BottomBarRenderer : Component.Renderer {
     @Composable
     override fun Render(
-        component: ViewComponent,
+        blueprint: Blueprint,
         modifier: Modifier?,
     ) {
-        val fabComponent =
-            remember { component.children.find { it.type == "FloatingActionButton" } }
+        val component = (blueprint as? GenericBlueprint)?.component ?: return
+        val fabComponent = remember { component.children.find { it.type == "FloatingActionButton" } }
         val actions = component.createActions()
         val floatingActionButton = createFloatingActionButtonComposable(fabComponent)
 
@@ -70,5 +72,5 @@ fun PreviewRenderBottomBar() {
                     ),
                 ),
         )
-    BottomBarRenderer.Render(component = sampleComponent)
+    BottomBarRenderer.Render(GenericBlueprint(sampleComponent.id, sampleComponent))
 }

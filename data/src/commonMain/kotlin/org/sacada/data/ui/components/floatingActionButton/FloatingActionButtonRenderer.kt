@@ -5,6 +5,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import org.sacada.annotation.RegisterComponent
+import org.sacada.core.blueprint.Blueprint
+import org.sacada.core.blueprint.GenericBlueprint
 import org.sacada.core.model.ViewComponent
 import org.sacada.core.util.getStringAttribute
 import org.sacada.data.ui.components.Component
@@ -19,9 +21,10 @@ import org.sacada.data.util.performAction
 object FloatingActionButtonRenderer : Component.Renderer {
     @Composable
     override fun Render(
-        component: ViewComponent,
+        blueprint: Blueprint,
         modifier: Modifier?,
     ) {
+        val component = (blueprint as? GenericBlueprint)?.component ?: return
         val navController = LocalNavigator.current
 //        val viewModel = LocalScreenViewModel.current
 //        val allComponentsValid by viewModel.areAllComponentsValid.collectAsState()
@@ -57,5 +60,5 @@ fun PreviewRenderFloatingActionButton() {
                     "contentDescription" to JsonPrimitive("Add"),
                 ),
         )
-    FloatingActionButtonRenderer.Render(component = sampleComponent)
+    FloatingActionButtonRenderer.Render(GenericBlueprint(sampleComponent.id, sampleComponent))
 }

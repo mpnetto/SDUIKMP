@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
-import org.sacada.core.model.ViewComponent
+import org.sacada.core.blueprint.Blueprint
 import org.sacada.figma2sdui.data.nodes.BaseComponent
 import org.sacada.figma2sdui.data.nodes.properties.root.RootComponentDescription
 
@@ -12,7 +12,7 @@ interface Component {
     interface Renderer {
         @Composable
         fun Render(
-            component: ViewComponent,
+            blueprint: Blueprint,
             modifier: Modifier? = null,
         )
     }

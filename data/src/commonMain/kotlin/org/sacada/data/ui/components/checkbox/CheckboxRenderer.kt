@@ -14,7 +14,8 @@ import androidx.compose.ui.unit.dp
 import kotlinx.serialization.json.JsonPrimitive
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.sacada.annotation.RegisterComponent
-import org.sacada.core.model.ViewComponent
+import org.sacada.core.blueprint.Blueprint
+import org.sacada.core.blueprint.GenericBlueprint
 import org.sacada.core.util.getStringAttribute
 import org.sacada.data.ui.components.Component
 
@@ -22,9 +23,10 @@ import org.sacada.data.ui.components.Component
 object CheckboxRenderer : Component.Renderer {
     @Composable
     override fun Render(
-        component: ViewComponent,
+        blueprint: Blueprint,
         modifier: Modifier?,
     ) {
+        val component = (blueprint as? GenericBlueprint)?.component ?: return
         val isChecked = rememberSaveable { mutableStateOf(false) }
         val labelText = component.getStringAttribute("label")
 
@@ -52,5 +54,5 @@ fun PreviewRenderCheckbox() {
                     "label" to JsonPrimitive("Accept Terms and Conditions"),
                 ),
         )
-    CheckboxRenderer.Render(component = sampleComponent)
+    CheckboxRenderer.Render(GenericBlueprint(sampleComponent.id, sampleComponent))
 }

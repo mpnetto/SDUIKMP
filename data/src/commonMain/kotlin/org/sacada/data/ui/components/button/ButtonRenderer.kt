@@ -7,25 +7,32 @@ import androidx.compose.ui.Modifier
 import kotlinx.serialization.json.JsonPrimitive
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.sacada.annotation.RegisterComponent
-import org.sacada.core.model.ViewComponent
+import org.sacada.core.blueprint.ButtonBlueprint
+import org.sacada.core.blueprint.Blueprint
 import org.sacada.data.navigation.LocalNavigator
 import org.sacada.data.ui.components.Component
 import org.sacada.data.ui.components.RenderComponent
-import org.sacada.data.util.performAction
 
 @RegisterComponent
 object ButtonRenderer : Component.Renderer {
     @Composable
     override fun Render(
-        component: ViewComponent,
+        blueprint: Blueprint,
         modifier: Modifier?,
     ) {
+        blueprint as ButtonBlueprint
         val navController = LocalNavigator.current
 
         Button(onClick = {
-            component.performAction(navController)
+            when (blueprint.action?.type) {
+                "NAVIGATE" ->
+                    blueprint.action.destination?.let {
+                        navController.navigate("screen/$it")
+                    }
+                "BACK" -> navController.popBackStack()
+            }
         }) {
-            component.children.forEach { child ->
+            blueprint.children.forEach { child ->
                 RenderComponent(child)
             }
         }
@@ -48,6 +55,6 @@ fun PreviewRenderButton_Varied() {
         )
 
     MaterialTheme {
-        ButtonRenderer.Render(component = sampleComponent)
+        ButtonRenderer.Render(ButtonBlueprint.from(sampleComponent))
     }
 }
