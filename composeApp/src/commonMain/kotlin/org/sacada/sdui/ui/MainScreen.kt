@@ -37,6 +37,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.sacada.core.model.ViewScreens
 import org.sacada.data.navigation.LocalNavigator
 import org.sacada.data.ui.screen.RenderScreen
+import org.sacada.sdui.ui.components.UploadReferenceButton
 
 const val LOADING_SCREEN_ROUTE = "loading"
 const val SCREEN_ROUTE_PATTERN = "screen/{screenId}"
@@ -59,6 +60,7 @@ fun MainScreen() {
             errorMessage = errorMessage,
             onNavigateToScreen = { index -> viewModel.goToScreen(index) },
             onRetry = { viewModel.fetchData(showLoading = true) },
+            onUploadReferences = { bytes, name -> viewModel.uploadReferenceFile(bytes, name) },
         )
     }
 }
@@ -71,6 +73,7 @@ fun MainScreenUI(
     errorMessage: String?,
     onNavigateToScreen: (Int) -> Unit,
     onRetry: () -> Unit,
+    onUploadReferences: (ByteArray, String) -> Unit,
 ) {
     val navController = rememberNavController()
     val scope = rememberCoroutineScope()
@@ -116,6 +119,8 @@ fun MainScreenUI(
                             )
                         }
 
+                        Spacer(Modifier.height(12.dp))
+                        UploadReferenceButton(onFileUploaded = onUploadReferences)
                         Spacer(Modifier.height(12.dp))
                     }
                 }

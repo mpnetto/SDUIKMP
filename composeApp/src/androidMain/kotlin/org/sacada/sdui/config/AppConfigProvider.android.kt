@@ -6,4 +6,6 @@ actual object AppConfigProvider {
     actual fun getFigmaApiKey(): String = BuildConfig.FIGMA_API_KEY
 
     actual fun getFigmaFileKey(): String = BuildConfig.FIGMA_FILE_KEY
+
+    actual fun getOpenAiApiKey(): String = BuildConfig.OPENAI_API_KEY
 }
