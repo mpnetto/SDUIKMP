@@ -7,9 +7,11 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import org.sacada.core.model.ViewScreens
 import org.sacada.data.domain.useCase.GetSduiScreensUseCase
+import org.sacada.codegenerator.ChatGptClient
 
 class MainScreenViewModel(
     private val getSduiScreensUseCase: GetSduiScreensUseCase,
+    private val chatGptClient: ChatGptClient,
 ) : ViewModel() {
     private val _errorMessage = mutableStateOf<String?>(null)
     val errorMessage: State<String?> = _errorMessage
@@ -69,6 +71,12 @@ class MainScreenViewModel(
     fun goToScreen(index: Int) {
         _rootComponent.value?.screens?.get(index)?.let {
             _currentScreenId.value = it.id
+        }
+    }
+
+    fun uploadReferenceFile(bytes: ByteArray, name: String) {
+        viewModelScope.launch {
+            chatGptClient.uploadReferenceFile(name, bytes)
         }
     }
 }

@@ -1,5 +1,13 @@
 package org.sacada.codegenerator
 
+import io.ktor.client.call.body
+import io.ktor.client.request.forms.FormDataContent
+import io.ktor.client.request.forms.formData
+import io.ktor.client.request.post
+import io.ktor.client.request.header
+import io.ktor.client.request.setBody
+import io.ktor.http.HttpHeaders
+import io.ktor.http.headersOf
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
@@ -28,6 +36,12 @@ internal data class ChatChoice(
 @Serializable
 internal data class ChatCompletionResponse(
     val choices: List<ChatChoice>
+)
+
+@Serializable
+internal data class FileUploadResponse(
+    val id: String,
+    val filename: String,
 )
 
 class ChatGptClient(
@@ -77,6 +91,31 @@ class ChatGptClient(
         )
         return when (result) {
             is NetworkResult.Success -> result.data.choices.firstOrNull()?.message?.content
+            is NetworkResult.Error -> null
+        }
+    }
+
+    suspend fun uploadReferenceFile(fileName: String, bytes: ByteArray): String? {
+        val formData = FormDataContent(
+            formData {
+                append("purpose", "assistants")
+                append("file", bytes, headersOf(HttpHeaders.ContentDisposition, "form-data; name=\"file\"; filename=\"$fileName\"") )
+            }
+        )
+
+        val url = apiClient.buildUrl(apiClient.baseUrl, "files")
+        val result = runCatching {
+            apiClient.httpClient.post(url) {
+                header(HttpHeaders.Authorization, "Bearer $apiKey")
+                setBody(formData)
+            }.body<FileUploadResponse>()
+        }.fold(
+            onSuccess = { NetworkResult.Success(it) },
+            onFailure = { NetworkResult.Error(it.message ?: "Unknown error", it) },
+        )
+
+        return when (result) {
+            is NetworkResult.Success -> result.data.id
             is NetworkResult.Error -> null
         }
     }

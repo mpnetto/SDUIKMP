@@ -4,4 +4,6 @@ expect object AppConfigProvider {
     fun getFigmaApiKey(): String
 
     fun getFigmaFileKey(): String
+
+    fun getOpenAiApiKey(): String
 }

@@ -39,6 +39,8 @@ kotlin {
             implementation(projects.core)
             implementation(projects.data)
             implementation(projects.jsonbuilder)
+            implementation(projects.network)
+            implementation(projects.codegenerator)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -86,8 +88,14 @@ android {
                 path = "local.properties",
                 propertyName = "FIGMA_FILE_KEY",
             )
+        val openAiKey =
+            project.loadLocalProperty(
+                path = "local.properties",
+                propertyName = "OPENAI_API_KEY",
+            )
         buildConfigField("String", "FIGMA_API_KEY", apiKey)
         buildConfigField("String", "FIGMA_FILE_KEY", apiSecret)
+        buildConfigField("String", "OPENAI_API_KEY", openAiKey)
     }
     packaging {
         resources {

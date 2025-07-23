@@ -9,4 +9,7 @@ actual object AppConfigProvider {
 
     actual fun getFigmaFileKey(): String =
         getenv("FIGMA_FILE_KEY")?.toKString() ?: ""
+
+    actual fun getOpenAiApiKey(): String =
+        getenv("OPENAI_API_KEY")?.toKString() ?: ""
 }
